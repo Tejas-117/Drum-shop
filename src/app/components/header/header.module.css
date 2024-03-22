@@ -5,6 +5,16 @@
   justify-content: space-evenly;
 }
 
+.navbar_logo {
+  width: 200px;
+  height: 75px;
+  position: relative;
+}
+
+.navbar_logo img {
+  object-fit: contain;
+}
+
 .search_container {
   display: flex;
   justify-content: space-between;
@@ -73,5 +83,32 @@
 
   .hamburger_menu {
     display: inline-block;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .navbar {
+    padding: 0 1.5rem;
+  }
+
+  .navbar_logo {
+    width: 150px;
+    height: 60px;
+  }
+
+  .hamburger_menu {
+    width: 20px;
+    height: 20px;
+  }
+
+  .user_icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .user_icon_arrow {
+    height: 10px;
+    width: 10px;
+    margin-left: 5px;
   }
 }

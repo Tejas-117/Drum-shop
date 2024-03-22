@@ -12,13 +12,14 @@ function Header() {
       <GiHamburgerMenu className={styles.hamburger_menu} />
 
       {/* logo image in the header */}
-      <Image
-        src={'/images/logo.png'}
-        alt='logo'
-        width={200}
-        height={75}
-        priority={true}
-      />
+      <div className={styles.navbar_logo}>
+        <Image
+          src={'/images/logo.png'}
+          alt='logo'
+          priority={true}
+          fill={true}          
+        />
+      </div>
 
       {/* search container in the header */}
       <div className={styles.search_container}>
