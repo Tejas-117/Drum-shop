@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import styles from './header.module.css';
-import { LuSearch } from "react-icons/lu";
-import { FaCircleUser } from "react-icons/fa6";
-import { BiSolidDownArrow } from "react-icons/bi";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { LuSearch } from 'react-icons/lu';
+import { FaCircleUser } from 'react-icons/fa6';
+import { BiSolidDownArrow } from 'react-icons/bi';
+import { GiHamburgerMenu } from 'react-icons/gi';
 
 function Header() {
   return (

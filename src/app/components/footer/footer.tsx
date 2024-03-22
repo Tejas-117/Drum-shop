@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import styles from './footer.module.css';
-import { AiFillFacebook, AiFillLinkedin, AiFillYoutube } from "react-icons/ai";
-import { BsTwitterX, BsInstagram } from "react-icons/bs";
+import { AiFillFacebook, AiFillLinkedin, AiFillYoutube } from 'react-icons/ai';
+import { BsTwitterX, BsInstagram } from 'react-icons/bs';
 
 function Footer() {
   return (
