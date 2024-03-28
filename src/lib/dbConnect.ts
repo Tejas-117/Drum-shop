@@ -1,3 +1,9 @@
+/*
+  File: dbConnect.ts
+  Description: This file contains a method to connect to 
+  mongodb using mongoose
+*/
+
 import mongoose from 'mongoose';
 
 declare global {

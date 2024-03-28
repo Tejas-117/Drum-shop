@@ -38,6 +38,7 @@
 .socials ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -95,4 +96,9 @@
   #footer {
     padding: 2rem;
   }
+
+  .additional_info {
+    font-size: 0.8rem;
+  }
+
 }

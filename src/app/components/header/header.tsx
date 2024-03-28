@@ -4,6 +4,7 @@ import { LuSearch } from 'react-icons/lu';
 import { FaCircleUser } from 'react-icons/fa6';
 import { BiSolidDownArrow } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import Link from 'next/link';
 
 function Header() {
   return (
@@ -12,14 +13,16 @@ function Header() {
       <GiHamburgerMenu className={styles.hamburger_menu} />
 
       {/* logo image in the header */}
-      <div className={styles.navbar_logo}>
-        <Image
-          src={'/images/logo.png'}
-          alt='logo'
-          priority={true}
-          fill={true}          
-        />
-      </div>
+      <Link href='/'>
+        <div className={styles.navbar_logo}>
+            <Image
+              src={'/images/logo.png'}
+              alt='logo'
+              priority={true}
+              fill={true}          
+            />
+        </div>
+      </Link>
 
       {/* search container in the header */}
       <div className={styles.search_container}>

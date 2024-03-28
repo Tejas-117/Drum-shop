@@ -88,7 +88,7 @@
 
 @media screen and (max-width: 500px) {
   .navbar {
-    padding: 0 1.5rem;
+    padding: 0 1rem;
   }
 
   .navbar_logo {
