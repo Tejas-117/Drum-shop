@@ -12,9 +12,10 @@ import toast from 'react-hot-toast';
 import { BeatLoader } from 'react-spinners';
 import { useRouter } from 'next/navigation';
 import { getSignUpValidationSchema } from '@/validation/user';
+import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 
 // type declared for the form state
-type SignUpFormData = {
+interface SignUpFormData {
   fullName: string,
   email: string,
   phone: string,
@@ -22,6 +23,9 @@ type SignUpFormData = {
 
 function SignupForm() {
   const router = useRouter();
+
+  /* since the signup process is divided into multiple steps, this 
+    is primarily used for step one */
   const SignUpValidationSchema = getSignUpValidationSchema(false);
 
   // state to represent form data
@@ -34,6 +38,10 @@ function SignupForm() {
   const [otpInput, setOtpInput] = useState(['', '', '', '', '', '']);
 
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');  
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // represents the number of seconds left till the otp is valid
   const OTP_VALIDITY_TIME = 180; // in seconds
@@ -49,7 +57,7 @@ function SignupForm() {
   // represent the state of the network request
   const [isLoading, setIsLoading] = useState(false);
 
-  // function to handle the submit event from the form
+  // function to handle the submit event from the form in step one
   function handleUserInfoFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -239,8 +247,31 @@ function SignupForm() {
     }
   }
 
+  /* since the password and confirm password validation is not done using the zod
+    schema, it is done here */
+  function validatePassword() {
+    if (password.length < 8) {
+      addClassToInformUser('password', 'invalid', 'Password must be at least 8 characters')
+      return false;
+    } else {
+      addClassToInformUser('password', 'valid')
+    }
+    
+    if (password !== confirmPassword) {
+      addClassToInformUser('confirm_password', 'invalid', 'Passwords do not match')
+      return false;
+    }  else {
+      addClassToInformUser('confirm_password', 'valid')
+    }
+
+    return true;
+  }
+
   // function to submit all user info and finish signing up
   async function signup() {
+    // check if the password is valid
+    if (!validatePassword()) return;
+
     setIsLoading(true);
 
     try {
@@ -282,7 +313,7 @@ function SignupForm() {
         <div className={styles.step_container}>
           <h1>Register</h1>
 
-          <form onSubmit={handleUserInfoFormSubmit} className={styles.signup_form}>
+          <form onSubmit={handleUserInfoFormSubmit} className={styles.signup_form_one}>
             <div className={styles.signup_form_control}>
               <input
                 type="text"
@@ -412,18 +443,84 @@ function SignupForm() {
 
       {/* step 03: input password */}
       {(step === 3) &&
-        <div className={styles.step_container}>
-          <h1>Enter password</h1>
-          <p>Enter a password of atleast 8 characters</p>
+        <div className={`${styles.step_container} ${styles.password_container}`}>
+          <h1>Almost done</h1>
+          <p>Please set a password for your account to continue</p>
 
-          <input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className={`${styles.signup_form_control} ${styles.password_input_control}`}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name='password'
+              placeholder='Set Password'
+              value={password}
+              onChange={(e) => {
+                resetInputElement('password');
+                setPassword(e.target.value);
+              }}
+              onBlur={(e) => {
+                // basic validation of password length
+                if (e.target.value.length < 8) {
+                  addClassToInformUser('password', 'invalid', 'Password must be at least 8 characters')
+                } else {
+                  addClassToInformUser('password', 'valid')
+                }
+              }}
+            />
+            <div className={styles.eye_icon} onClick={(e) => setShowPassword((prevVal) => !prevVal)}>
+              {(showPassword === true) ?
+                <AiFillEye />:
+                <AiFillEyeInvisible />
+              }
+            </div>
+            <span data-name='password' className={styles.input_error_message}></span>
+          </div>
 
-          <button onClick={signup}>Continue</button>
+          <div className={`${styles.signup_form_control} ${styles.password_input_control}`}>
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              name='confirm_password'
+              placeholder='Confirm Password'
+              value={confirmPassword}
+              onChange={(e) => {
+                resetInputElement('confirm_password');
+                setConfirmPassword(e.target.value);
+              }}
+              onBlur={(e) => {
+                // basic validation of password length
+                if ((password === confirmPassword) &&
+                  (password.length >= 8)) {
+                  addClassToInformUser('confirm_password', 'valid')
+                } else {
+                  let message = ''
+                  if (password.length > 0 && password !== confirmPassword) {
+                    message = 'Passwords do not match';
+                  } else if (confirmPassword.length === 0) {
+                    message = 'This field is requried';
+                  }
+
+                  addClassToInformUser('confirm_password', 'invalid', message);
+                }
+              }}
+            />
+            <div className={styles.eye_icon} onClick={(e) => setShowConfirmPassword((prevVal) => !prevVal)}>
+              {(showConfirmPassword === true) ?
+                <AiFillEye />:
+                <AiFillEyeInvisible />
+              }
+            </div>
+            <span data-name='confirm_password' className={styles.input_error_message}></span>
+          </div>
+          
+          <button
+            className={styles.password_submit_btn}
+            onClick={signup}
+            disabled={isLoading}
+          >
+            {(isLoading === false) ?
+              'Continue' :
+              <BeatLoader />
+            }
+          </button>
         </div>
       }
     </>

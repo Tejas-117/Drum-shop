@@ -3,6 +3,14 @@ import { getSignUpValidationSchema } from '@/validation/user';
 import redisClient from '@/lib/redisClient';
 import dbConnect from '@/lib/dbConnect';
 import User from '@/models/user';
+import { getZohoAxiosInstance } from '@/helpers/axios/zoho';
+import { AxiosResponse } from 'axios';
+
+interface ZohoCreateContactRes {
+  contact: {
+    contact_id: string,
+  }
+}
 
 export async function POST(req: NextRequest) {  
   const UserValidationSchema = getSignUpValidationSchema();
@@ -33,6 +41,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    await dbConnect();
+
     // check if the user is already registered
     const existingUser = await User.findOne({
       $or: [
@@ -59,8 +69,32 @@ export async function POST(req: NextRequest) {
     }
 
     // save the user to the database
-    await dbConnect();
-    const user = new User(validationRes.data).save();
+    const user = new User(validationRes.data);
+
+    // create a contact in the zoho inventory
+    const data = {
+      contact_name: reqBody.fullName,
+      contact_type: 'customer',
+      contact_persons: [
+        {
+          email: reqBody.email,
+          phone: reqBody.phone,
+          is_primary_contact: 'true'
+        }
+      ] 
+    };
+
+    const zohoOrgId = process.env.ZOHO_ORG_ID!;
+    const zohoInstance = await getZohoAxiosInstance();
+    const zohoRes: AxiosResponse<ZohoCreateContactRes> = await zohoInstance.post(
+      `contacts?organization_id=${zohoOrgId}`,
+      data
+    );
+
+    // add contact id to the user and save the user to db
+    const contactId = zohoRes.data.contact.contact_id;
+    user.contactId = contactId;
+    await user.save();
 
     return NextResponse.json(
       { 

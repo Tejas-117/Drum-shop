@@ -1,22 +1,23 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import redisClient from '@/lib/redisClient';
 
 type JWTPayload = {
   jwtId: string, // unique id for each token
   userId: string, // user id
   email: string, // user email
+  contactId: string,
   exp: number // jwt expiration time (timestamp)
 }
 
 const secretKey = process.env.JWT_SECRET!;
 
 // function to sign data into a JWT token
-export function signToken(userId: string, email: string) {
+export function signToken(user: {email: string, _id: string, contactId: string}) {
   const payload: JWTPayload = {
     jwtId: crypto.randomUUID(),
-    userId: userId,
-    email: email,
+    userId: user._id,
+    email: user.email,
+    contactId: user.contactId,
     exp: Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60), // expiry of 7days
   }
 

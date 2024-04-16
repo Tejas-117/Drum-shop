@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
     }
 
     // generate a jwt and add it to the cookies
-    const jwtoken = await signToken(existingUser._id, existingUser.email) as string;
+    const jwtoken = await signToken(existingUser) as string;
 
     const response = NextResponse.json(
       { 
