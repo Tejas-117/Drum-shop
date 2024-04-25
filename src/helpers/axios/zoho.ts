@@ -44,7 +44,7 @@ function getZohoAxiosInstance() {
           .then((res) => {
             // get the access token present in the data
             const {access_token} = res.data;
-
+            
             // store the access token in the global variable
             zohoAccessToken = access_token;
 
@@ -79,6 +79,86 @@ function getZohoAxiosInstance() {
   return zohoAxiosInstance;
 }
 
+// fetch with interceptor capabilities
+async function zohoFetch(
+  path: string,
+  options: ResponseInit,
+  retry: boolean = false,
+) {
+  const url = `${zohoApiBaseUrl}${path}`
+
+  // add token and content-type to the headers
+  options.headers = {
+    ...options.headers,
+    'Content-Type': 'application/json',
+    'Authorization': `Zoho-oauthtoken ${zohoAccessToken}`,
+  }
+
+  try {
+    const res = await fetch(url, options);   
+
+    if (res.ok === false) {
+      // if already retried the current request, return;
+      if (retry === true) {
+        throw new Error(`Zoho HTTP error, status: ${res.status}`)
+      }
+
+      if (res.status === 401) {
+        // get a new access token
+        const {access_token} = await fetchAccessToken();
+
+        if (access_token) {
+          // retry the previous request.
+          return zohoFetch(path, options, true);
+        }
+      }
+      else {
+        throw new Error(`Zoho HTTP error, status: ${res.status}`);
+      }
+    } else {
+      const data = await res.json();
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
+// function to fetch new access token
+async function fetchAccessToken(): Promise<{access_token: string}> {
+  try {
+    // format the query params and add it to the url
+    const queryParams = {
+      refresh_token: process.env.ZOHO_REFRESH_TOKEN!,
+      client_id: process.env.ZOHO_CLIENT_ID!,
+      client_secret: process.env.ZOHO_CLIENT_SECRET!,
+      grant_type: 'refresh_token'
+    };
+    
+    const queryString = new URLSearchParams(queryParams).toString();
+    const authUrl = `${zohoAuthUrl}?${queryString}`;
+    
+    const authRes = await fetch(authUrl, {
+      method: 'POST',
+    });
+
+    // if successfully fetched a new access token
+    if (authRes.ok) {
+      const data = await authRes.json();
+      const {access_token} = data;
+
+      // store the access token in the global variable
+      zohoAccessToken = access_token;
+      return {access_token};
+    } else {
+      throw new Error(`Zoho access token, HTTP error: ${authRes.status}`)
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
 export {
-  getZohoAxiosInstance,
+  zohoFetch,
 }
