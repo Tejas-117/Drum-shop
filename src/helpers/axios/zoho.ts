@@ -10,7 +10,7 @@ const zohoApiBaseUrl = process.env.ZOHO_BASE_API_URL!;
 const zohoAuthUrl = process.env.ZOHO_AUTH_API_URL!;
 let zohoAccessToken = '';
 
-async function getZohoAxiosInstance() {
+function getZohoAxiosInstance() {
   const zohoAxiosInstance: AxiosInstance = axios.create({
     baseURL: zohoApiBaseUrl,
     headers: {

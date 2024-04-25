@@ -6,8 +6,8 @@
 import Image from 'next/image';
 import { EmblaOptionsType } from 'embla-carousel';
 import styles from './page.module.css';
-import MainCarousel from './components/carousel/main/mainCarousel';
-import BrandCarousel from './components/carousel/brand/brandCarousel';
+import MainCarousel from './components/carousel/home/main/mainCarousel';
+import BrandCarousel from './components/carousel/home/brand/brandCarousel';
 
 export default function Home() {
   // main carousel options and slide

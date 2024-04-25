@@ -3,8 +3,7 @@
 */
 'use client';
 
-import React from 'react';
-import { EmblaOptionsType } from 'embla-carousel'
+import { EmblaOptionsType, EmblaPluginType } from 'embla-carousel'
 import { DotButton, useDotButton } from './carouselDotButton'
 import {
   PrevButton,
@@ -16,12 +15,14 @@ import styles from './carousel.module.css'
 
 type PropType = {
   slides: React.JSX.Element[]
-  options?: EmblaOptionsType
+  options?: EmblaOptionsType,
+  plugins?: EmblaPluginType[],
+  classNames?: string[],
 }
 
 const EmblaCarousel: React.FC<PropType> = (props) => {
-  const { slides, options } = props
-  const [emblaRef, emblaApi] = useEmblaCarousel(options)
+  const { slides, options, plugins } = props
+  const [emblaRef, emblaApi] = useEmblaCarousel(options, plugins)
 
   const { selectedIndex, scrollSnaps, onDotButtonClick } =
     useDotButton(emblaApi)
@@ -34,7 +35,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   } = usePrevNextButtons(emblaApi)
 
   return (
-    <section className={styles.embla}>
+    <section className={`${styles.embla} ${props.classNames?.join(' ')}`}>
       <div className={styles.embla__viewport} ref={emblaRef}>
         {/* carousel slides go here */}
         <div className={styles.embla__container}>

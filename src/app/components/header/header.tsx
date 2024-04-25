@@ -38,7 +38,7 @@ function Header() {
       {/* navbar with links */}
       <div className={styles.nav_links}>
         <ul>
-          <li><a>Store</a></li>
+          <li><Link href={'/store'}>Store</Link></li>
           <li><a>Services</a></li>
           <li><a>Events</a></li>
           <li><a>Contact Us</a></li>
