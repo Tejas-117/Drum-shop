@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Requirements to run the project
+(latest versions preferred)
 
-## Getting Started
+1. [NodeJS](https://nodejs.org/en)
 
-First, run the development server:
+2. [MongoDB](https://www.mongodb.com/docs/manual/administration/install-community/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Installation 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Clone the repository
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. git clone https://github.com/Tejas-117/Drum-shop.git
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. run `cd Drum-shop`
 
-## Learn More
+### Install the necessary packages
 
-To learn more about Next.js, take a look at the following resources:
+Run `npm install`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Add the environment variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The sample for the required env variables in the file example.env
 
-## Deploy on Vercel
+### Start the development server
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Run `npm run dev`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. Visit [localhost:3000](http://localhost:3000)
+
+# Commiting to the repo
+
+1. Do not push changes to `main` branch.
+2. Create a new branch with a necessary changes for the feature
+ and create a new pull request.
+3. The pull request will be reviewd and merged to `main`
