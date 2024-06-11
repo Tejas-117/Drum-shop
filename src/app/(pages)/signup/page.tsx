@@ -4,7 +4,7 @@
 
 import Image from 'next/image';
 import styles from './signup.module.css';
-import SignupForm from '../components/signupForm/signupForm';
+import SignupForm from '../../components/signupForm/signupForm';
 import Link from 'next/link';
 
 function SignUpPage() {
