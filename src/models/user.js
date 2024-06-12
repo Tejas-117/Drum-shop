@@ -2,14 +2,9 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema({
-  contactId: { // this field identifies contacts in zoho inventory
-    type: String,
-    required: [true, 'Contact id is required'],
-    minLength: [1, 'Contact id can\'t be empty'],
-  },
   fullName: {
     type: String,
-    require: [true, 'Full name is required'],
+    required: [true, 'Full name is required'],
     trim: true,
     minLength: [1, 'Full name can\'t be empty'],
     maxLength: [60, 'Full name can\'t exceed 60 characters']
