@@ -1,9 +1,6 @@
 import styles from './products.module.css';
 import ProductsSearch from '@/app/components/search/search';
 
-// function to fetch all the products from zoho
-async function fetchProductsFromZoho() {}
-
 async function AdminProductsPage({
   searchParams,
 }: {
