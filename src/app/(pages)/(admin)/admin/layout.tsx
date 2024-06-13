@@ -1,6 +1,13 @@
+/**
+ * File: admin/layout.tsx
+ * Description: This file contains the generic layout for admin dashboart
+*/
+
 import type { Metadata } from 'next';
 import { Inter, Bebas_Neue } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
+import Sidebar from '@/app/components/admin/sidebar/sidebar';
+import '@/app/globals.css';
 
 // add the required fonts
 const inter = Inter({
@@ -28,6 +35,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>
       <body>
+        <Sidebar />
         {children}
         <Toaster position='top-center'/>
       </body>
