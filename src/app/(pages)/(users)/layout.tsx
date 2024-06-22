@@ -19,7 +19,7 @@ const bebasNeue = Bebas_Neue({
 
 // title and description (meta tag) at home page
 export const metadata: Metadata = {
-  title: 'The Bangalore drum shop',
+  title: 'The Bangalore Drum Shop',
   description: 'Ultimate place to get all your musical instruments',
 };
 

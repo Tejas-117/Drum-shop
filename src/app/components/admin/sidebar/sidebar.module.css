@@ -1,0 +1,22 @@
+.sidebar_container {
+  width: 320px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1rem;
+  color: var(--white);
+  background-color: var(--charcoal);
+  font-size: 1.3rem;
+}
+
+.sidebar_container ul {
+  list-style: none;
+}
+
+.sidebar_container ul li {
+  margin: 20px 0;
+}

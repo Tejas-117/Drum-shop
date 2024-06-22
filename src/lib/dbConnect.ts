@@ -2,6 +2,7 @@
   File: dbConnect.ts
   Description: This file contains a method to connect to 
   mongodb using mongoose
+  Reference: https://github.com/vercel/next.js/blob/canary/examples/with-mongodb-mongoose/lib/dbConnect.ts
 */
 
 import mongoose from 'mongoose';

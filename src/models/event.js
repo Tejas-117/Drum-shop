@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
 
 const eventSchema = new mongoose.Schema({
-  eventCode: {
-    type: mongoose.Types.ObjectId,
-    default: new mongoose.Types.ObjectId(),
-  },
   eventName: {
     type: String,
     trim: true,

@@ -1,22 +1,18 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-  productCode: {
-    type: String,
-    required: [true, 'Product code is required'],
-    trim: true,
-    minLength: [1, 'Product code can\'t be empty'],
-    maxLength: [20, 'Product code can\'t exceed 20 characters'],
-  },
-  productName: {
+  name: {
     type: String,
     required: [true, 'Product name is required'],
     trim: true,
     minLength: [1, 'Product name can\'t be empty'],
+    maxLength: [150, 'Product name can\'t exceed 150 characters'],
   },
-  division: {
+  category: {
     type: String,
     trim: true,
+    minLength: [1, 'Category can\'t be empty'],
+    maxLength: [50, 'Category can\'t exceed 50 characters'],
   },
   brand: {
     type: String,
@@ -25,21 +21,13 @@ const productSchema = new mongoose.Schema({
     minLength: [1, 'Brand can\'t be empty'],
     maxLength: [50, 'Brand can\'t exceed 50 characters'],
   },
-  color: {
-    type: String,
-    required: [true, 'Specify the color of the product'],
-    minLength: [1, 'Product color can\'t be empty']
-  },
   model: {
     type: String,
     required: [true, 'Model(SKU) of the product is required'],
+    trim: true,
   },
-  groupId: {
-    type: String,
-  }, 
-  quantity: {
-    type: Number
-  },
+
+  // price related fields
   costPrice: {
     type: Number
   },
@@ -55,18 +43,42 @@ const productSchema = new mongoose.Schema({
   discount: {
     type: Number
   },
-  mrp: {
+  hsnCode: {
     type: Number
   },
-  hsn_code: {
-    type: Number
-  },
+
   description: {
-    type: String
+    type: String,
+    trim: true,
+    required: [true, 'Product description can\'t be empty'],
+    minLength: [1, 'Product description can\'t be empty'],   
   },
   specification: {
-    type: String
+    type: String,
+    trim: true,
+    required: [true, 'Product specification can\'t be empty'],
+    minLength: [1, 'Product specification can\'t be empty'],   
   },
+
+  images: [String],
+
+  // all the available variants
+  variants: {
+    color: [String],
+    size: [String],
+    material: [String],
+  },
+
+  // all the possible combos with the variants
+  groups: [{
+    color: String,
+    size: String,
+    material: String,
+    quantity: Number,
+    price: Number,
+  }],
+}, {
+  timestamps: true,
 });
 
 const Product = mongoose.models.products || mongoose.model('products', productSchema);

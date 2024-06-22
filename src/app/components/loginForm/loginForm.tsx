@@ -91,8 +91,6 @@ function LoginForm() {
 
   // basic validation for input fields
   function validateField(name: string, value: string) {
-    // const field = (name === 'email') ? 'Email/Phone': 'Password';
-
     // get the appopriate schema for the field
     const schemaShape = LoginValidationSchema.shape;
     const fieldSchemaShape = schemaShape[name as keyof typeof schemaShape];

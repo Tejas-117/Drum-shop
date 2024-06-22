@@ -41,7 +41,7 @@ function Header() {
           <li><Link href={'/store'}>Store</Link></li>
           <li><a>Services</a></li>
           <li><a>Events</a></li>
-          <li><a>Contact Us</a></li>
+          <li><Link href={'/contactus'}>Contact Us</Link></li>
         </ul>
       </div>
 
