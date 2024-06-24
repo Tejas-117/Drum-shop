@@ -6,7 +6,7 @@ import Product from '@/models/product';
 import dbConnect from '@/lib/dbConnect';
 
 const ROOT_DIR = process.cwd();
-const UPLOAD_DIR = join(ROOT_DIR, 'src', 'app', 'uploads');
+const UPLOAD_DIR = join(ROOT_DIR, 'public', 'uploads');
 
 export async function POST(req: NextRequest) {
   try {
@@ -65,7 +65,10 @@ export async function POST(req: NextRequest) {
       const extension = image.name.split('.').pop();
 
       const imagePath = `${UPLOAD_DIR}/${newProduct._id}_${i}.${extension}`;
-      imagePaths.push(imagePath); // track all the image paths to store in db
+
+       // track all the image urls to store in db
+      const imageUrl = `/uploads/${newProduct._id}_${i}.${extension}`;
+      imagePaths.push(imageUrl);
 
       const bytes = await image.arrayBuffer();
       const imgBuffer = Buffer.from(bytes);
@@ -82,6 +85,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

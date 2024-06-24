@@ -1,15 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
+import Product from '@/models/product';
+import mongoose from 'mongoose';
 
-export async function GET(req: NextRequest) {
-  console.log();
+export async function GET(
+  req: Request,
+  { params }: { params: { productId: string }}
+) {
+  // get the productId from dynamic url 
+  const { productId } = params;
+
+  // if the productId is invalid mongodb objectId, return error.
+  if (mongoose.isValidObjectId(productId) === false) {
+    return NextResponse.json(
+      { message: 'Invalid product id' },
+      { status: 400 }
+    );
+  }
 
   try {
-    // fetch the correct product from the db
+    await dbConnect();
 
+    // fetch the product from db
+    const product = await Product.findById(productId).select('-costPrice');
 
     return NextResponse.json({
       message: 'Successfully retrieved product from db',
+      product,
     });
   } catch (error) {
     return NextResponse.json(

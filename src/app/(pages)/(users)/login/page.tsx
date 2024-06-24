@@ -4,7 +4,7 @@
 import Image from 'next/image';
 import styles from './login.module.css';
 import Link from 'next/link';
-import LoginForm from '../../components/loginForm/loginForm';
+import LoginForm from '../../../components/loginForm/loginForm';
 
 function LoginPage() {
   return (

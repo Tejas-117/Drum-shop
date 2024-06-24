@@ -358,9 +358,13 @@ function AddProduct() {
         const elements = form?.querySelectorAll('input, textarea');
 
         elements?.forEach((element) => {
-          element.classList.remove('input_valid');
-          element.classList.remove('input_invalid');
+          element.classList.remove(`${styles.input_valid}`);
+          element.classList.remove(`${styles.input_invalid}`);
         });
+
+        // clear the images input
+        const imageInput: HTMLInputElement = document.querySelector('input[type="file"]')!;
+        imageInput.value = '';
       } catch (error: any) {
         const errorData = error.response.data;
         const errorMessage = errorData.message;
@@ -674,7 +678,14 @@ function AddProduct() {
                 <div className={`${styles.form_control} ${styles.variant_val_input}`}>
                   <label htmlFor="optionValue">Option value</label>
                   <div>
-                    <input type="text" />
+                    <input
+                      type="text"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }} 
+                    />
                     <GrAdd onClick={addVariantValue} />
                   </div>
 

@@ -15,7 +15,7 @@ import { getSignUpValidationSchema } from '@/validation/user';
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 
 // type declared for the form state
-interface SignUpFormData {
+type SignUpFormData = {
   fullName: string,
   email: string,
   phone: string,

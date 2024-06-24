@@ -7,12 +7,12 @@
 import { cache } from 'react';
 import { cookies } from 'next/headers';
 
-type User = {
+type UserType = {
   userId: string,
   email: string,
 }
 
-async function getAuthenticatedUser(): Promise<User | null> {
+async function getAuthenticatedUser(): Promise<UserType | null> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`, {
       cache: 'no-store',
@@ -22,7 +22,12 @@ async function getAuthenticatedUser(): Promise<User | null> {
       },
     });
     const data = await res.json();
-    return data;
+
+    if (data.user) {
+      return data.user;
+    } else {
+      return null;
+    }
   } catch (error) {
     return null;
   }
@@ -33,4 +38,5 @@ const getUser = cache(getAuthenticatedUser);
 export {
   getAuthenticatedUser,
   getUser,
+  type UserType,
 }
