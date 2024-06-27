@@ -4,15 +4,23 @@
   user's info using server-side fetch
 */
 
+'use server';
+
 import { cache } from 'react';
 import { cookies } from 'next/headers';
 
-type UserType = {
-  userId: string,
-  email: string,
+type UserDataType = {
+  user: {
+    userId: string,
+    email: string,
+  },
+  cart: {
+    cartId: string,
+    productCount: number,
+  }
 }
 
-async function getAuthenticatedUser(): Promise<UserType | null> {
+async function getAuthenticatedUser(): Promise<UserDataType | null> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`, {
       cache: 'no-store',
@@ -21,10 +29,10 @@ async function getAuthenticatedUser(): Promise<UserType | null> {
         Cookie: cookies().toString()
       },
     });
-    const data = await res.json();
+    const {user, cart} = await res.json();
 
-    if (data.user) {
-      return data.user;
+    if (user) {
+      return {user, cart};
     } else {
       return null;
     }
@@ -38,5 +46,5 @@ const getUser = cache(getAuthenticatedUser);
 export {
   getAuthenticatedUser,
   getUser,
-  type UserType,
+  type UserDataType as UserType,
 }

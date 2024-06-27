@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import { CartProductType, addProduct } from '@/actions/cart';
 import { type UserType } from '@/helpers/auth/getUser';
 
+import Cookies from 'js-cookie';
+
 type VariantsType = {
   color: string[],
   size: string[],
@@ -59,21 +61,6 @@ function Product(
   const [material, setMaterial] = useState<string| null>(null);
   const [activeGroup, setActiveGroup] = useState<GroupsType | null>(null);
 
-  // function to update group when user selects on various variant options
-  function updateGroup() {
-    const groups = product.groups;
-
-    groups.forEach((grp) => {
-      if ((grp.color === color) &&
-          (grp.size === size) &&
-          (grp.material === material)) 
-      {
-        setActiveGroup(grp);
-        return;
-      }
-    });
-  }
-
   // function to update variant button ui to indicate 'active' status.
   function makeVariantActive(name: string, val: string) {
     // clear previous active states
@@ -100,13 +87,17 @@ function Product(
     try {
       // if the user is authenticated, add product using server action
       if (user !== null) {
-        addProduct({
+        const data = await addProduct({
           productId: product._id,
           groupId: activeGroup?._id || null,
           quantity: 1,
         });
+
+        if (data.error) {
+          throw new Error(data.message);
+        }
       } else {
-        // share the cart info to localStorage
+        // save the cart info to localStorage
 
         // retrieve the cart present in the localStorage first
         let cart = localStorage.getItem('cart');
@@ -199,9 +190,24 @@ function Product(
   }, []);
 
   useEffect(() => {
+    // function to update group when user selects on various variant options
+    function updateGroup() {
+      const groups = product.groups;
+
+      groups.forEach((grp) => {
+        if ((grp.color === color) &&
+            (grp.size === size) &&
+            (grp.material === material)) 
+        {
+          setActiveGroup(grp);
+          return;
+        }
+      });
+    }
+
     // when any variant is changed, update the group
     updateGroup();
-  }, [color, size, material, updateGroup]);
+  }, [color, size, material, product.groups]);
 
   useEffect(() => {
     if (!activeGroup) return;

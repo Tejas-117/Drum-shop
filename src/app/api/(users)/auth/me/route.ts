@@ -1,10 +1,14 @@
 import { verifyToken } from '@/helpers/jwt';
+import dbConnect from '@/lib/dbConnect';
+import Cart from '@/models/cart';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
     // retrieve the token stored in the cookies
-    const token = req.cookies.get('token')?.value;
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
 
     // if the token is not present, user is not authenticated
     if (!token) {
@@ -17,12 +21,22 @@ export async function GET(req: NextRequest) {
     // verify the user and return the info
     const decodedToken = verifyToken(token);
 
+    // get the userId and add the cartId to cookie
+    await dbConnect();
+    const userId = decodedToken.userId;
+
+    const cart = await Cart.findOne({userId});
+
     return NextResponse.json(
       { 
         message: 'Authenticated',
         user: {
           userId: decodedToken.userId,
           email: decodedToken.email,
+        },
+        cart: {
+          cartId: cart._id,
+          productCount: cart.products.length,
         }
       }, 
       { status: 200 }

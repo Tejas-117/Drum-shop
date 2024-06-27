@@ -38,6 +38,7 @@ async function addProduct(cartProduct: CartProductType) {
     const userCart: (CartType | null) = await Cart.findOne({userId: user.userId});
 
     let cartId = '';
+    let productsCount = 0;
 
     // if the user does not have any cart, create new one
     if (!userCart) {
@@ -51,18 +52,20 @@ async function addProduct(cartProduct: CartProductType) {
       });
 
       cartId = newUserCart._id;
+      productsCount = 1;
+
       await newUserCart.save();
     } else {
       // if cart already exists, add/update product to it
       cartId = userCart._id;
 
-      // if the product exists in the cart, update it
+      // find the index of the product in the cart
       const productIndex = userCart.products.findIndex((product) => {
         // if their product ids match
         if ((product.productId.toString()) === (cartProduct.productId)) { 
           // check if the groups ids match too
           if ((product.groupId) && (cartProduct.groupId)) {
-            return (product.groupId === cartProduct.groupId);
+            return (product.groupId.toString() === cartProduct.groupId);
           } else {
             return true;
           }
@@ -75,17 +78,36 @@ async function addProduct(cartProduct: CartProductType) {
           { userId: user.userId },
           { $push: { products: cartProduct } }
         );
+
+        productsCount = userCart.products.length + 1;
       } else {
         // product exists, update it
         await Cart.updateOne(
           { userId: user.userId },
-          { $inc: { 'products.$.quantity': cartProduct.quantity } }
+          { $set: { [`products.${productIndex}.quantity`]: cartProduct.quantity } }
         );
+
+        productsCount = userCart.products.length;
       }
     }
 
-    // save the cart id to a cookie and send it to user
-    cookies().set('cartId', cartId);
+    // save the cartId and productCount in cart to a cookie and send it to user
+    cookies().set({
+      name: 'cartId',
+      value: cartId,
+      httpOnly: true,
+    });
+
+    cookies().set({
+      name: 'cartCount',
+      value: productsCount.toString(),
+      httpOnly: true,
+    });
+
+    return {
+      success: true,
+      productsCount,
+    }
   } catch (error: any) {
     return {
       error: true,
