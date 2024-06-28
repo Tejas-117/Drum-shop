@@ -35,7 +35,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>
       <body>
-        <Header />
+        <Header cart={userData?.cart || null} />
 
         {/* dummy component to add cookies */}
         <SetCartCookie cart={userData?.cart || null} />

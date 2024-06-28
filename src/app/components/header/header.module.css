@@ -38,7 +38,24 @@
 .nav_links ul {
   list-style: none;
   display: flex;
+  align-items: center;
   gap: 1.2rem;
+}
+
+.cart_icon {
+  width: 20px;
+  height: 20px;
+}
+
+.cart_notification {
+  position: absolute;
+  top: -10px;
+  right: -14px;
+  background-color: red;
+  color: var(--white);
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 0.7rem;
 }
 
 .user_icon {

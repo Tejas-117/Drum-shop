@@ -4,9 +4,17 @@ import { LuSearch } from 'react-icons/lu';
 import { FaCircleUser } from 'react-icons/fa6';
 import { BiSolidDownArrow } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
+import { MdOutlineShoppingBasket } from 'react-icons/md';
 import Link from 'next/link';
 
-function Header() {
+type CartPropType = {
+  cartId: string,
+  productCount: number,
+}
+
+function Header({ cart }: { cart: (CartPropType | null) }) {
+  const cartCount = cart?.productCount || 0;  
+
   return (
     <nav className={styles.navbar}>
       {/* hamburger icons that will be displayed in tablet and mobile */}
@@ -42,6 +50,15 @@ function Header() {
           <li><a>Services</a></li>
           <li><a>Events</a></li>
           <li><Link href={'/contactus'}>Contact Us</Link></li>
+          <li style={{position: 'relative'}}>
+            <Link href={'/cart'}>
+              <MdOutlineShoppingBasket className={styles.cart_icon} />
+            </Link>
+
+            {(cartCount > 0) &&
+              <span className={styles.cart_notification}>{cartCount}</span>
+            }
+          </li>
         </ul>
       </div>
 
