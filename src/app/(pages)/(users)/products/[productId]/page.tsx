@@ -8,22 +8,20 @@ async function fetchProduct(productId: string) {
   );
   const data = await res.json();
 
-  if (res.status !== 200) {
-    return null;
-  }
-
-  return data.product;
+  return data;
 }
 
 async function Product({ params }: { params: {productId: string} }) {
   const {productId} = params;
-  const product = await fetchProduct(productId);
+  const { product, message } = await fetchProduct(productId);
 
   const user = await getUser();
  
   // if data couldn't be fetched, display this component instead
+  // TODO: instead of displaying the error like this, send it to the client 
+  // component further down and handle it there
   if (!product) {
-    return <main>Error fetching data.</main>;
+    return <main>{message}</main>;
   }
 
   return (

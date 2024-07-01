@@ -1,5 +1,5 @@
 import styles from './store.module.css';
-import AdsCarousel from '../../components/carousel/store/ads/adsCarousel';
+import AdsCarousel from '@/app/components/carousel/store/ads/adsCarousel';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsArrowRight } from 'react-icons/bs';

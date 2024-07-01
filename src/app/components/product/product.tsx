@@ -9,41 +9,15 @@ import toast from 'react-hot-toast';
 import { CartProductType, addProduct } from '@/actions/cart';
 import { type UserType } from '@/helpers/auth/getUser';
 
-import Cookies from 'js-cookie';
+import {
+  type VariantsType,
+  type GroupsType,
+  type ProductType,
+} from '@/types/product';
 
-type VariantsType = {
-  color: string[],
-  size: string[],
-  material: string[],
-};
-
-type GroupsType = {
-  color: string | null,
-  size: string | null,
-  material: string | null,
-  quantity: number,
-  price: number,
-  _id: string,
-};
-
-type ProductDataType = {
-  _id: string,
-  name: string,
-  category: string,
-  brand: string,
-  model: string,
-  sellingPrice: number,
-  discount: number,
-  hsnCode: number,
-  description: string,
-  specification: string,
-  images: string[],
-  variants: VariantsType,
-  groups: GroupsType[],
-}
 
 function Product(
-  { product, user }: { product: ProductDataType, user: (UserType | null) }
+  { product, user }: { product: ProductType, user: (UserType | null) }
 ) {
   const router = useRouter();
   const pathName = usePathname();

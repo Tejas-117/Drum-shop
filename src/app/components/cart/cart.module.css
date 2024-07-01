@@ -1,0 +1,29 @@
+.top_heading {
+  background-color: var(--golden-yellow);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow_icon {
+  margin-left: 1rem;
+}
+
+.outer_container h1 {
+  font-family: var(--font-bebas-neue);
+  font-size: 3.5rem;
+  font-weight: 400;
+  letter-spacing: 1.3px;
+  margin: 2rem 0 0 4rem;
+}
+
+/* cart container styles */
+.cart_container {
+  padding: 0 4rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+
+
+
