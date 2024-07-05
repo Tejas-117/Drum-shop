@@ -35,8 +35,8 @@ export async function GET(req: NextRequest) {
           email: decodedToken.email,
         },
         cart: {
-          cartId: cart._id,
-          productCount: cart.products.length,
+          cartId: cart?._id || '',
+          productCount: cart?.products.length || 0,
         }
       }, 
       { status: 200 }

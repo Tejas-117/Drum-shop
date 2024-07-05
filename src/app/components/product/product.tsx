@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import styles from './product.module.css';
-import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 import { CartProductType, addProduct } from '@/actions/cart';
@@ -14,7 +13,6 @@ import {
   type GroupsType,
   type ProductType,
 } from '@/types/product';
-
 
 function Product(
   { product, user }: { product: ProductType, user: (UserType | null) }
@@ -245,8 +243,8 @@ function Product(
           <p className={styles.description}>{product.description}</p>
           <h1 className={styles.selling_price}>₹ 
             {(activeGroup === null) ?
-              product.sellingPrice.toLocaleString() :
-              activeGroup.price.toLocaleString()
+              product.sellingPrice.toLocaleString('en-IN') :
+              activeGroup.price.toLocaleString('en-IN')
             }
           </h1>
 
@@ -283,18 +281,6 @@ function Product(
       {/* Frequently bought together container */}
 
       {/* Similar products container */}
-
-      {/* 'contact us' container */}
-      <div className={styles.need_help_container}>
-        <h1>NEED HELP?</h1>
-        <p>
-          Need assistance choosing the perfect drum or have questions? Contact us today for expert advice and personalized support. Our team is here to help you find your rhythm and make your drumming journey unforgettable.
-        </p>
-        
-        <Link href={'/contactus'}>
-          <button>Contact Us</button>
-        </Link>
-      </div>
     </div>
   )
 }

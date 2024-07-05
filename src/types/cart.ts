@@ -19,9 +19,7 @@ interface CartType {
 };
 
 type CartProductWithPrice = CartProduct & {
-  productId: {
-    price?: number,
-  }
+  price?: number,
 };
 
 export {

@@ -2,20 +2,21 @@
 
 import { FaLongArrowAltRight } from 'react-icons/fa';
 import styles from './cart.module.css';
-import CartProduct from '../cartProduct/cartProduct';
+import CartProduct from './cartProduct/cartProduct';
+import CartPrice from './cartPrice/cartPrice';
 
-import { type CartType } from '@/types/cart';
-import { CartContext, CartContextProvider } from '@/app/context/cart/provider';
-import { initialState, reducer } from '@/app/context/cart/reducer';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CartContext } from '@/app/context/cart/provider';
+import { CartProductWithPrice } from '@/types/cart';
 
-function CartComponent({ cartProp }: { cartProp: (CartType | null) }) {
+function Cart() {
   const {state, dispatch} = useContext(CartContext);
 
+  const [products, setProducts] = useState<CartProductWithPrice[]>([]);
+
   useEffect(() => {
-    // add products to the context
-    
-  });
+    setProducts(state.products);
+  }, [state.products]);
 
   return (
     <div className={styles.outer_container}>
@@ -24,18 +25,17 @@ function CartComponent({ cartProp }: { cartProp: (CartType | null) }) {
         <FaLongArrowAltRight className={styles.arrow_icon} />
       </p>
 
-      <h1>YOUR CART</h1>
+      <h1 className={styles.cart_heading}>YOUR CART</h1>
 
       {/* container containing all the cart info */}
-      <CartContextProvider initialState={initialState} reducer={reducer}>
         <div className={styles.cart_container}>
           
           {/* container containing product info in cart */}
           <div className={styles.left_container}>
-            {cartProp?.products.map((cartProduct, idx) => {
+            {products.map((cartProduct, idx) => {
               return (
                 <CartProduct 
-                  cartProduct={cartProduct} 
+                  cartProductId={cartProduct._id} 
                   key={idx} 
                 />
               );
@@ -43,12 +43,12 @@ function CartComponent({ cartProp }: { cartProp: (CartType | null) }) {
           </div>
 
           {/* container containing price details */}
-          <div className={styles.right_container}></div>
+          <div className={styles.right_container}>
+            <CartPrice />
+          </div>
         </div>
-      </CartContextProvider>
-
     </div>
   );
 }
 
-export default CartComponent
+export default Cart

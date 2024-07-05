@@ -1,7 +1,6 @@
 import { verifyToken } from '@/helpers/jwt';
 import dbConnect from '@/lib/dbConnect';
 import Cart from '@/models/cart';
-import Product from '@/models/product';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

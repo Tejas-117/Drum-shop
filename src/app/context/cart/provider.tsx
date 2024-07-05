@@ -14,7 +14,10 @@ type StateContextType = {
   dispatch: Dispatch<ActionType>;
 };
 
-export const CartContext = createContext<StateContextType | null>(null);
+export const CartContext = createContext<StateContextType>({
+  state: { products: [] },
+  dispatch: () => null,
+});
 
 export const CartContextProvider = (
   { children, initialState, reducer }: StateProviderProps

@@ -14,10 +14,7 @@ const cartSchema = new mongoose.Schema({
       ref: Product.modelName,
       required: [true, 'Product id of the item in cart is required'],
     },
-    groupId: {
-      type: mongoose.Types.ObjectId,
-      required: [true, 'Group id of the item in cart is required'],
-    },
+    groupId: mongoose.Types.ObjectId,
     quantity: {
       type: Number,
       required: [true, 'Ordered quantity can not be empty'],

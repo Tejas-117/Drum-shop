@@ -1,4 +1,5 @@
-import ProductComponent from '@/app/components/product/product';
+import NeedHelp from '@/app/components/needHelp/needHelp';
+import ProductPage from '@/app/components/product/product';
 import { getUser } from '@/helpers/auth/getUser';
 
 async function fetchProduct(productId: string) {
@@ -25,10 +26,11 @@ async function Product({ params }: { params: {productId: string} }) {
   }
 
   return (
-    <main
-      style={{minHeight: 'unset'}}
-    >
-      <ProductComponent product={product} user={user} />
+    <main style={{minHeight: 'unset'}}>
+      <ProductPage product={product} user={user} />
+      
+      {/* 'contact us' container */}
+      <NeedHelp />
     </main>
   );
 }

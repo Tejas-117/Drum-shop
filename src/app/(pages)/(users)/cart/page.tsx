@@ -1,4 +1,5 @@
-import CartComponent from '@/app/components/cart/cartComponent';
+import CartWrapper from '@/app/components/cart/cartWrapper/cartWrapper';
+import NeedHelp from '@/app/components/needHelp/needHelp';
 import { cookies } from 'next/headers';
 
 // function to fetch cart data of the user
@@ -8,7 +9,6 @@ async function fetchCart() {
     { 
       cache: 'no-store',
       headers: { 
-        // cookie should be added while using server-side fetch
         Cookie: cookies().toString()
       },
     },
@@ -18,14 +18,15 @@ async function fetchCart() {
   return data;
 }
 
-async function CartPage() {
+async function Cart() {
   const data = await fetchCart();
 
   return (
     <main>
-      <CartComponent cartProp={data?.cart || null} />
+      <CartWrapper cart={data?.cart || null} />
+      <NeedHelp />
     </main>
   );
 }
 
-export default CartPage;
+export default Cart;

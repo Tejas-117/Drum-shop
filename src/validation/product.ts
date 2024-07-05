@@ -53,6 +53,7 @@ const AddProductValidationSchema = z.object({
   cgst: z.number().min(0, 'CGST can\'t be negative'),  
   sgst: z.number().min(0, 'SGST can\'t be negative'),  
   discount: z.number(),  
+  quantity: z.number().min(0, 'Quantity can\'t be negative'),  
   hsnCode: z.number({
       required_error: 'HSN code can\'t be empty',
     }),  

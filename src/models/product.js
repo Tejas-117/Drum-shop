@@ -47,6 +47,9 @@ const productSchema = new mongoose.Schema({
     type: Number
   },
 
+  // this quantity would be used if the product doesn't have any variants
+  quantity: Number,
+
   description: {
     type: String,
     trim: true,
