@@ -8,6 +8,12 @@ const cartSchema = new mongoose.Schema({
     ref: User.modelName,
     required: [true, 'User id is required for saving cart'],
   },
+  status: {
+    type: String,
+    enum: ['active', 'fulfilled'],
+    default: 'active',
+    required: true,
+  },
   products: [{
     productId: {
       type: mongoose.Types.ObjectId,

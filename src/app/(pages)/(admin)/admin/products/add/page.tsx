@@ -60,6 +60,7 @@ function AddProduct() {
     brand: '',
     model: '',
 
+    quantity: 0,
     costPrice: 0,
     sellingPrice: 0,
     cgst: 0,
@@ -526,6 +527,18 @@ function AddProduct() {
               value={formState.sellingPrice}
               onChange={(e) => updateFormState('sellingPrice', e.target.value)}
               onBlur={(e) => validateField('sellingPrice', parseFloat(e.target.value))}
+            />
+            <span data-name='sellingPrice' className={styles.error_msg}></span>
+          </div>
+
+          <div className={styles.form_control}>
+            <label htmlFor="quantity">Quantity</label>
+            <input 
+              type="number" 
+              name='quantity'
+              value={formState.quantity}
+              onChange={(e) => updateFormState('quantity', e.target.value)}
+              onBlur={(e) => validateField('quantity', parseFloat(e.target.value))}
             />
             <span data-name='sellingPrice' className={styles.error_msg}></span>
           </div>

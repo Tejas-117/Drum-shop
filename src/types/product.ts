@@ -24,6 +24,7 @@ type ProductType = {
   category: string,
   brand: string,
   model: string,
+  quantity ?: number,
   sellingPrice: number,
   discount: number,
   hsnCode: number,

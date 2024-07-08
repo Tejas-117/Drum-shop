@@ -2,16 +2,19 @@ import { useContext, useEffect, useState } from 'react';
 import { IoMdAdd, IoMdRemove } from 'react-icons/io';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import styles from './cartProduct.module.css';
+import toast from 'react-hot-toast';
+
 import { CartContext } from '@/app/context/cart/provider';
 import { type CartProductWithPrice } from '@/types/cart';
 import { type GroupsType } from '@/types/product';
-import toast from 'react-hot-toast';
+import { removeProduct, updateQuantity } from '@/actions/cart';
 
 function CartProduct({ cartProductId }: { cartProductId: string}) {
   const {state, dispatch} = useContext(CartContext);
 
   // state to hold the prop
-  const [cartProduct, setCartProduct] = useState<CartProductWithPrice | null>(null);
+  const temp = state.products.find((cartProduct) => cartProduct._id === cartProductId);
+  const [cartProduct, setCartProduct] = useState<CartProductWithPrice>(temp!);
 
   // state to hold the group info of the selected product
   const [group, setGroup] = useState<(GroupsType | null)>(null);
@@ -23,34 +26,54 @@ function CartProduct({ cartProductId }: { cartProductId: string}) {
   const [maxQuantity, setMaxQuantity] = useState(0);
 
   // function to increase quantity of the product in cart
-  function increaseQuantity() {    
+  async function increaseQuantity() {
     if (cartProduct.quantity === maxQuantity) {
       toast.error('Max quantity available');
       return;
     }
 
+    const productId = cartProduct.productId._id;
+    const {success, message} = await updateQuantity(productId, cartProduct._id, 1);
+
+    if (!success) {
+      toast.error(message);
+      return;
+    }
+
+    // update the local product state
     setCartProduct((prevState) => {
       return {
         ...prevState,
         quantity: prevState.quantity + 1,
       }
     });
+
+    // update the context
     dispatch({
       type: 'increase_quantity',
       payload: cartProduct,
     });
 
+    // update the `total` price of the product
     setTotal((prevTotal) => prevTotal + getPrice());
   }
 
   // function to decrease quantity of the product in cart
-  function decreaseQuantity() {
-    if (cartProduct.quantity === 1) return;
+  async function decreaseQuantity() {
+    if (!cartProduct || cartProduct.quantity === 1) return;
+
+    const productId = cartProduct.productId._id;
+    const {success, message} = await updateQuantity(productId, cartProduct._id, -1);
+
+    if (!success) {
+      toast.error(message);
+      return;
+    }
 
     setCartProduct((prevState) => {
       return {
         ...prevState,
-        quantity: prevState.quantity - 1,
+        quantity: (prevState) ? prevState.quantity - 1 : 0,
       }
     });
     dispatch({
@@ -62,13 +85,20 @@ function CartProduct({ cartProductId }: { cartProductId: string}) {
   }
 
   // function to remove product from the cart
-  function removeProductFromCart() {
-    dispatch({
-      type: 'remove_from_cart',
-      payload: cartProduct,
-    });
+  async function removeProductFromCart() {
+    // call server action to update in the db
+    const res = await removeProduct(cartProductId);
 
-    toast.success('Removed an item from the product');
+    if (res.success) {
+      dispatch({
+        type: 'remove_from_cart',
+        payload: cartProduct,
+      });
+  
+      toast.success('Removed an item from the product');
+    } else {
+      toast.error('Error removing item from the cart.')
+    }
   }
 
   // function to get the price of the product (not to calculate total)
@@ -76,7 +106,7 @@ function CartProduct({ cartProductId }: { cartProductId: string}) {
     if (group !== null) {
       return group.price;
     } else {
-      return cartProduct.productId.sellingPrice;
+      return cartProduct?.productId.sellingPrice;
     }
   }
 

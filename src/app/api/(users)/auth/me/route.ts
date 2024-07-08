@@ -25,7 +25,8 @@ export async function GET(req: NextRequest) {
     await dbConnect();
     const userId = decodedToken.userId;
 
-    const cart = await Cart.findOne({userId});
+    // TODO: optimise this database call by using redis possibly
+    const cart = await Cart.findOne({userId, status: 'active'});
 
     return NextResponse.json(
       { 

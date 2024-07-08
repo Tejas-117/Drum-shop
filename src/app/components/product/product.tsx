@@ -67,56 +67,14 @@ function Product(
 
         if (data.error) {
           throw new Error(data.message);
+        } else {
+          toast.success('Added product to the cart!!');
         }
       } else {
-        // save the cart info to localStorage
-
-        // retrieve the cart present in the localStorage first
-        let cart = localStorage.getItem('cart');
-
-        if (!cart) {
-          // if the cart is not present, add it
-          const newCart = {
-            products: [{
-              productId: product._id,
-              groupId: activeGroup?._id,
-              quantity: 1,
-            }]
-          }
-
-          localStorage.setItem('cart', JSON.stringify(newCart));
-        } else {
-          // else, add/update the product to the cart
-          const cartObj: {products: CartProductType[]} = JSON.parse(cart);
-          const cartProducts = cartObj.products;
-
-          const productIndex = cartProducts.findIndex((pd) => {
-            if (pd.productId.toString() === product._id) {
-              if ((pd.groupId) && (activeGroup?._id)) {
-                return (pd.groupId.toString() === activeGroup._id);
-              } else {
-                return true;
-              }
-            }
-          });
-
-          // if the product is not found in the cart, add it
-          if (productIndex === -1) {
-            cartProducts.push({
-              productId: product._id,
-              groupId: activeGroup?._id || null,
-              quantity: 1,
-            });
-          } else {
-            // if the product is found in the cart, update the quantity
-            // TODO: update the quantity in the cart
-          }
-
-          localStorage.setItem('cart', JSON.stringify({products: cartProducts}));
-        }
+        toast.error('Please login to add the product to your cart.')
       }
     } catch (error: any) {
-      toast.error('Error adding product to the cart');
+      toast.error(error.message || 'Error adding product to the cart');
     }
   }
 

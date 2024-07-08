@@ -24,7 +24,10 @@ export async function GET(req: NextRequest) {
     await dbConnect();
 
     // retrieve the cart using the userId
-    const cart = await Cart.findOne({userId: userData.userId})
+    const cart = await Cart.findOne({ 
+                              userId: userData.userId,
+                              status: 'active',
+                            })
                            .populate({ 
                               path: 'products.productId',
                               

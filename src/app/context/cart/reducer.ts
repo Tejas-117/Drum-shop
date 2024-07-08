@@ -22,7 +22,7 @@ export const reducer = (
 
   switch (type) {
     case 'add_to_cart': {
-      // check if the product already exists, if not then add it
+      // TODO: check if the product already exists, if not then add it
 
       // NOTE: payload here would be of type CartProductWithPrice,
       const newProducts = [...state.products, payload];
