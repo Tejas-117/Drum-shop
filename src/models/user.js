@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  privilege: {
+    type: String,
+    enum: ['customer', 'staff', 'admin', 'chief'],
+    default: 'customer',
+  },
   forgotPasswordToken: String,
   forgotPasswordTokenExpiry: Date,
 });
