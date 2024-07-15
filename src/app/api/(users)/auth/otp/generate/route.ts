@@ -25,13 +25,14 @@ export async function POST(req: NextRequest) {
     const otp = generateOTP();
   
     // set this otp in redis database for a min
-    await redisClient.set(email, otp, 'EX', 180);
+    await redisClient.set(email, otp, {ex: 180});
   
     return NextResponse.json(
       { message: 'OTP generated successfully' },
       { status: 200 },
     );
   } catch (error: any) {
+    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' }, 
       { status: 500 }

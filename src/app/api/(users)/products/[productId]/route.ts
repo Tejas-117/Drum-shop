@@ -24,10 +24,20 @@ export async function GET(
     // fetch the product from db
     const product = await Product.findById(productId).select('-costPrice');
 
-    return NextResponse.json({
-      message: 'Successfully retrieved product from db',
-      product,
-    });
+    if (!product) {
+      return NextResponse.json(
+        { message: 'Product not found.' },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        message: 'Successfully retrieved product from db',
+        product,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { message: 'Internal server error' },

@@ -3,8 +3,11 @@
   Description: Create a redis client and export it
 */
 
-import Redis from 'ioredis';
+import { Redis } from '@upstash/redis'
 
-const redisClient = new Redis(process.env.REDIS_URL!);
+const redis = new Redis({
+  url: process.env.REDIS_URL,
+  token: process.env.REDIS_TOKEN,
+})
 
-export default redisClient;
+export default redis;

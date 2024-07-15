@@ -25,6 +25,7 @@ type FormStateType = {
   brand: string,
   model: string,
 
+  quantity: number,
   costPrice: number,
   sellingPrice: number,
   cgst: number,
@@ -447,6 +448,10 @@ function AddProduct() {
     setGroups(allGrps);
   }, [variants, formState.sellingPrice]);
 
+  useEffect(() => {
+
+  }, []);
+
   return (
     <main className={styles.main}>
       <h1>Add a new product</h1>
@@ -477,7 +482,8 @@ function AddProduct() {
               onChange={(e) => updateFormState('category', e.target.value)}
             >
               <option value="drums">Drums</option>
-              <option value="pads">Pads</option>
+              <option value="cymbals">Cymbals</option>
+              <option value="electric kits and pads">Electric kits and pads</option>
               <option value="tabla">Tabla</option>
               <option value="cajon">Cajon</option>
             </select>
@@ -524,7 +530,7 @@ function AddProduct() {
             <input 
               type="number" 
               name='sellingPrice'
-              value={formState.sellingPrice}
+              value={formState.sellingPrice.toString()}
               onChange={(e) => updateFormState('sellingPrice', e.target.value)}
               onBlur={(e) => validateField('sellingPrice', parseFloat(e.target.value))}
             />
@@ -536,7 +542,7 @@ function AddProduct() {
             <input 
               type="number" 
               name='quantity'
-              value={formState.quantity}
+              value={formState.quantity.toString()}
               onChange={(e) => updateFormState('quantity', e.target.value)}
               onBlur={(e) => validateField('quantity', parseFloat(e.target.value))}
             />
@@ -548,7 +554,7 @@ function AddProduct() {
             <input 
               type="number" 
               name='cgst'
-              value={formState.cgst}
+              value={formState.cgst.toString()}
               onChange={(e) => updateFormState('cgst', e.target.value)}
               onBlur={(e) => validateField('cgst', parseFloat(e.target.value))}
             />
@@ -560,7 +566,7 @@ function AddProduct() {
             <input 
               type="number" 
               name='sgst'
-              value={formState.sgst}
+              value={formState.sgst.toString()}
               onChange={(e) => updateFormState('sgst', e.target.value)}
               onBlur={(e) => validateField('sgst', parseFloat(e.target.value))}
             />
@@ -572,7 +578,7 @@ function AddProduct() {
             <input 
               type="number" 
               name='discount'
-              value={formState.discount}
+              value={formState.discount.toString()}
               onChange={(e) => updateFormState('discount', e.target.value)}
               onBlur={(e) => validateField('discount', parseFloat(e.target.value))}
             />

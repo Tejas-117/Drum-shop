@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
       // if the token hasn't already expired, then blacklist it
       if (tokenValidityRes.expired === false) {  
-        await redisClient.set(`bl_${token}`, token, 'EX', tokenValidityRes.validTime);
+        await redisClient.set(`bl_${token}`, token, {ex: tokenValidityRes.validTime});
       }
     }
 

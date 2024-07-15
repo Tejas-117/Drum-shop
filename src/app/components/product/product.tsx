@@ -5,7 +5,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import styles from './product.module.css';
 import toast from 'react-hot-toast';
 
-import { CartProductType, addProduct } from '@/actions/cart';
+import { addProduct } from '@/actions/cart';
 import { type UserType } from '@/helpers/auth/getUser';
 
 import {

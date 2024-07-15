@@ -1,10 +1,33 @@
+import NeedHelp from '@/app/components/needHelp/needHelp';
 import styles from './store.module.css';
 import AdsCarousel from '@/app/components/carousel/store/ads/adsCarousel';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsArrowRight } from 'react-icons/bs';
+import ProductCategoryList from '@/app/components/store/categoryList/categoryList';
+import { ProductType } from '@/types/product';
+import { getUser } from '@/helpers/auth/getUser';
 
-function Store() {
+type CategoryDataType = {
+  _id: string,
+  products: ProductType[],
+}
+
+type ResponseType = {
+  categoryData: CategoryDataType[] 
+} 
+
+async function fetchStoreData() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products?store=true`);
+  return await res.json();
+}
+
+async function Store() {
+  const res = await fetchStoreData();
+  const data: ResponseType = res.data;
+
+  const user = await getUser();
+
   return (
     <main className={styles.main}>
       {/* ads carousel */}
@@ -97,8 +120,24 @@ function Store() {
             </p>
           </div>
         </div>
-
       </section>
+
+      {/* shop by category */}
+      <section className={styles.shop_by_category_container}>
+        <h1>SHOP BY CATEGORY</h1>
+        
+        {data.categoryData.map((ctData, idx: number) => {
+          return (
+            <ProductCategoryList 
+              categoryList={ctData}
+              key={idx}
+              user={user}
+            />
+          );
+        })}
+      </section>
+
+      <NeedHelp />
     </main>
   );
 }

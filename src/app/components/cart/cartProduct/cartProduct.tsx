@@ -118,7 +118,7 @@ function CartProduct({ cartProductId }: { cartProductId: string}) {
 
     // calculate the price of the product
     const tempProduct = temp.productId;
-    let matchingGroup = tempProduct.groups.find((group) => (group._id === temp.groupId)) || null;;
+    let matchingGroup = tempProduct.groups.find((group) => (group._id === temp.groupId)) || null;
 
     // calculate the total for this product
     const total = temp.quantity * temp.price!;
@@ -126,7 +126,7 @@ function CartProduct({ cartProductId }: { cartProductId: string}) {
     setCartProduct(temp);
     setGroup(matchingGroup);
     setTotal(total);
-    setMaxQuantity(matchingGroup?.quantity || temp.quantity);
+    setMaxQuantity(matchingGroup?.quantity || tempProduct.quantity || 0);
   }, [state.products, cartProductId]);
 
   return (

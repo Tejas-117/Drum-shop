@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
 
     // get the otp from redis
     const generatedOTP = await redisClient.get(email);
+    console.log({generatedOTP, otp})
 
     // if the user did not generate otp previously, return error
     if (!generatedOTP) {
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     // verify if the otp match
-    if (generatedOTP !== otp) {
+    if (generatedOTP.toString() !== otp) {
       return NextResponse.json(
         { message: 'Incorrect OTP' }, 
         { status: 400 }
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
     }    
   
     // in redis store that this particular user has verified their email
-    await redisClient.set(`${email}_verified`, 'true', 'EX', 300);
+    await redisClient.set(`${email}_verified`, 'true', {ex: 300});
 
     return NextResponse.json(
       { message: 'OTP verified successfully' },

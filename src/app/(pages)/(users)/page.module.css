@@ -90,6 +90,11 @@
   height: inherit;
 }
 
+.custom_slide img {
+  object-fit: cover;
+  object-position: center center;
+}
+
 /* brands section */
 .brands_section {
   background-color: var(--charcoal);
