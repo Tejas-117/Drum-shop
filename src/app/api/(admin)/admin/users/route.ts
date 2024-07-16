@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // TODO: this route can only be accessed by admin with privilege 'chief'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     await dbConnect();
 

@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     }
     
     // verify the user and return the info
-    const decodedToken = verifyToken(token);
+    const decodedToken = await verifyToken(token);
 
     // get the userId and add the cartId to cookie
     await dbConnect();
@@ -44,12 +44,17 @@ export async function GET(req: NextRequest) {
     );
   } catch (error: any) {
     // if the error is because of the jwtoken expiry, the user is unauthenticated
-    if (error && error?.name) {
-      if (error.name === 'TokenExpiredError') {
+    if (error && error.code) {
+      if (error.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
+        return NextResponse.json(
+          { message: 'Invalid token' },
+          { status: 400 }
+        );
+      } else if (error.code === 'ERR_JWT_EXPIRED') {
         return NextResponse.json(
           { message: 'Unauthenticated' },
           { status: 401 }
-        )
+        );
       }
     }
 

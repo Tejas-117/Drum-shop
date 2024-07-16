@@ -4,12 +4,12 @@
 */
 'use client';
 
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import styles from './loginForm.module.css';
 import ReCAPTCHA from 'react-google-recaptcha';
 import toast from 'react-hot-toast';
 import { LoginValidationSchema } from '@/validation/user';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { BeatLoader } from 'react-spinners';
 
@@ -23,6 +23,9 @@ type LoginFormDataType = {
 type RecaptchRefType = ReCAPTCHA | null;
 
 function LoginForm() {
+  // check for message in search params
+  const searchParams = useSearchParams();
+
   const recaptchaRef = useRef(null);
 
   const router = useRouter();
@@ -142,6 +145,17 @@ function LoginForm() {
       messageContainer.innerHTML = '';
     }
   }
+
+  useEffect(() => {
+    const message = searchParams.get('message');
+
+    if (message) {
+      setTimeout(() => {
+        toast.error(message);
+        router.replace('/login');
+      }, 10);
+    }
+  }, [searchParams]);
 
   return (
     <div className={styles.login_form_container}>

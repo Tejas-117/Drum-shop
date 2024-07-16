@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
 
     // get the otp from redis
     const generatedOTP = await redisClient.get(email);
-    console.log({generatedOTP, otp})
 
     // if the user did not generate otp previously, return error
     if (!generatedOTP) {

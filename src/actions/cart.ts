@@ -20,7 +20,7 @@ type CartType = {
 }
 
 // util function to check if the userToken is valid or not
-function getUserFromCookies() {
+async function getUserFromCookies() {
   const userTokenCookie = cookies().get('token') || null;
 
   // if the auth token is not present return error.
@@ -29,7 +29,7 @@ function getUserFromCookies() {
   }
 
   const userAuthToken = userTokenCookie.value;
-  const user = verifyToken(userAuthToken);
+  const user = await verifyToken(userAuthToken);
 
   return user;
 }
@@ -37,7 +37,7 @@ function getUserFromCookies() {
 // function to add a product to the cart
 async function addProduct(cartProduct: CartProductType) {
   try {
-    const user = getUserFromCookies();
+    const user = await getUserFromCookies();
 
     await dbConnect();
 

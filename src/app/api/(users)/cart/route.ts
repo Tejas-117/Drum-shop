@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const userToken = userTokenCookie.value;
 
     // get the userId saved in the token
-    const userData = verifyToken(userToken);
+    const userData = await verifyToken(userToken);
 
     await dbConnect();
 
