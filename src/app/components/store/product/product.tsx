@@ -11,6 +11,8 @@ import { addProduct } from '@/actions/cart';
 import { ProductType } from '@/types/product';
 import { UserType } from '@/helpers/auth/getUser';
 
+// TODO: Add the important note on the products (i.e., `discount`, `out of stock`...etc.,)
+
 interface ProductProps {
   product: ProductType,
   user: (UserType | null),

@@ -2,8 +2,6 @@ import { verifyToken } from '@/helpers/jwt';
 
 // function to check if the user is admin
 async function isAdmin(token: string) {
-  console.log('Is admin function:')
-
   try {
     const data = await verifyToken(token);
     return (data.isAdmin);
