@@ -307,7 +307,6 @@ function AddProduct() {
     // validate the input data
     const validationRes = AddProductValidationSchema.safeParse(productData);
 
-    // check if the images are uploaded
     if (!validationRes.success) {
       // if validation fails, show error
       toast.error('Invalid input data');
@@ -328,7 +327,7 @@ function AddProduct() {
 
       // iterate over each file and add them to the formData
       if (images) {
-        for (let i = 0; i < images?.length; i += 1) {
+        for (let i = 0; i < images.length; i += 1) {
           formData.append('images', images[i]);
         }
       }
@@ -447,10 +446,6 @@ function AddProduct() {
 
     setGroups(allGrps);
   }, [variants, formState.sellingPrice]);
-
-  useEffect(() => {
-
-  }, []);
 
   return (
     <main className={styles.main}>

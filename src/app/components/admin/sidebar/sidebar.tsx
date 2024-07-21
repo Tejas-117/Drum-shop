@@ -9,10 +9,10 @@ import { MouseEvent } from 'react';
 import styles from './sidebar.module.css';
 import Link from 'next/link';
 import { IoIosArrowDown, IoMdAdd } from 'react-icons/io';
-import { BiHomeAlt2 } from "react-icons/bi";
-import { AiOutlineProduct } from "react-icons/ai";
-import { GrFormView } from "react-icons/gr";
-import { RiCalendarEventLine } from "react-icons/ri";
+import { BiHomeAlt2 } from 'react-icons/bi';
+import { AiOutlineProduct } from 'react-icons/ai';
+import { GrFormView } from 'react-icons/gr';
+import { RiCalendarEventLine } from 'react-icons/ri';
 
 function Sidebar() {
   function toggleSubMenu(e: MouseEvent) {
@@ -60,11 +60,34 @@ function Sidebar() {
         </div>
       </div>
       
-      <div className={styles.sidebar_entry}>
-        <Link href="/admin/events">
-          <RiCalendarEventLine />
-          Events
-        </Link>
+      <div 
+        className={`${styles.sidebar_entry} ${styles.cursor_pointer}`}
+        onClick={(e) => toggleSubMenu(e)}
+      >
+        <p>
+          <span>
+            <RiCalendarEventLine />
+            Events
+          </span>
+          <IoIosArrowDown className={styles.arrow_icon} />
+        </p>          
+
+        <div className={styles.sub_menu}>
+          <ul>
+            <li>
+              <Link href="/admin/events/edit">
+                <GrFormView />
+                Edit event
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/events/add">
+                <IoMdAdd />
+                Add Event
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

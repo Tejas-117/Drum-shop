@@ -1,0 +1,105 @@
+.main {
+  flex-grow: 1;
+  padding: 3rem;
+  background-color: var(--light-gray);
+}
+
+.main h1 {
+  margin: 10px auto;
+  width: fit-content;
+}
+
+/* form styles */
+.add_event_form {
+  width: 800px;
+  margin: 2rem auto;
+}
+
+.form_part {
+  background-color: var(--white);
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+
+.form_control {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 1rem 0; 
+}
+
+.form_control label {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.form_control input, 
+.form_control select,
+.form_control textarea {
+  margin: 10px 0;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid gray;
+  outline: none;
+  width: 100%;
+  background-color: transparent;
+}
+
+.form_control textarea {
+  resize: vertical;
+}
+
+.artist_input {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.artist_input label {
+  font-size: 1rem;
+}
+
+.artist_input div {
+  margin-top: 10px;
+}
+
+.product_input {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.add_input {
+  cursor: pointer;
+}
+
+.submit_btn {
+  width: 150px;
+  padding: 10px;
+  background-color: black;
+  color: white;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+
+.error_msg {
+  color: red;
+}
+
+.input_invalid {
+  border: 2px solid red !important;
+}
+
+.input_valid {
+  border: 2px solid green !important;
+}
+
+.added_artists {
+  margin-top: 1rem;
+}
+
+.added_artists p {
+  display: flex;
+  gap: 1rem;
+}

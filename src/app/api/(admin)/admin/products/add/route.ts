@@ -54,9 +54,10 @@ export async function POST(req: NextRequest) {
 
     // save other product data to db and retrieve the productId
     await dbConnect();
-    const newProduct = new Product(productData);
+    const newProduct = new Product(validateData.data);
 
     // write the images to the /uploads folder
+    // TODO: upload images to cloud storage
     const imagePaths = [];
     for(let i = 0; i < images.length; i += 1) {
       const image = images[i];
