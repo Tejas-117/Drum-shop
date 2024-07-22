@@ -1,5 +1,5 @@
 import styles from './products.module.css';
-import ProductsSearch from '@/app/components/search/search';
+import ProductsSearch from '@/app/components/admin/search/search';
 
 async function AdminProductsPage({
   searchParams,
