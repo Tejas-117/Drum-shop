@@ -84,6 +84,9 @@ const productSchema = new mongoose.Schema({
   timestamps: true,
 });
 
+productSchema.index({ name: 'text' });
+productSchema.index({ hsnCode: 1 });
+
 const Product = mongoose.models.products || mongoose.model('products', productSchema);
 
 export default Product;

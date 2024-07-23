@@ -37,6 +37,9 @@ const userSchema = new mongoose.Schema({
   forgotPasswordTokenExpiry: Date,
 });
 
+userSchema.index({ email: 1 });
+userSchema.index({ phone: 1 });
+
 // pre-save hook to encrypt password before saving the user
 userSchema.pre('save', async function(next) {
   // only hash the password if it has been modified (or is new)
