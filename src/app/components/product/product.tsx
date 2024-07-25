@@ -1,3 +1,11 @@
+/**
+ * File: product.tsx
+ * Description: this file consists of the component rendered
+ * on the view product page
+ * 
+ * /products/[productId]
+ */
+
 'use client';
 
 import { useEffect, useState } from 'react';

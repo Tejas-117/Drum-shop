@@ -1,0 +1,35 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-items: center;
+  background-color: var(--light-gray);
+}
+
+.proudcts_table {
+  width: 100%;
+  margin: 2rem 0;
+  border-radius: 7px;
+  border-collapse: collapse;
+  background-color: var(--white);
+}
+
+.proudcts_table td, .proudcts_table th {
+  text-align: left;
+  padding: 10px 25px;
+  border-bottom: 1px solid var(--light-gray);
+  max-width: 350px;
+}
+
+.proudcts_table td img {
+  width: 50px;
+  height: 50px;
+  border-radius: 6px;
+}
+
+.loader {
+  display: flex;
+  margin: 3rem 0;
+  justify-content: center;
+}

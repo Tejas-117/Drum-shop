@@ -1,42 +1,55 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
+
 import styles from './search.module.css';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
-function ProductsSearch() {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
+type SearchPropsType = {
+  searchVal: string,
+  searchParam: string,
+  setSearchVal: Dispatch<SetStateAction<string>>,
+  setSearchParam: Dispatch<SetStateAction<string>>,
+  handleSubmit: () => Promise<void>
+}
 
-  const [search, setSearch] = useState(searchParams.get('query')?.toString());
-
-  function handleSearch(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const params = new URLSearchParams(searchParams);
-
-    if (search) {
-      params.set('query', search);
-    } else {
-      params.delete('query');
-    }
-
-    replace(`${pathname}?${params.toString()}`);
-  }
-
+function ProductsSearch(
+  { searchVal, searchParam, setSearchVal, setSearchParam, handleSubmit }: SearchPropsType
+) {
   return (
-    <form 
-      onSubmit={handleSearch}
+    <form
       className={styles.search_container}
+      onKeyDown={(e) => {
+        if (e.code === 'Enter') {
+          e.preventDefault();
+        }
+      }}
     >
+      <select 
+        name="searchParam"
+        value={searchParam}
+        onChange={(e) => setSearchParam(e.target.value)}
+      >
+        <option value='name'>Name</option>
+        <option value='id'>Id</option>
+        <option value='hsnCode'>HSN Code</option>
+      </select>
+
       <input 
         type="text" 
-        placeholder='Search items by name'
+        placeholder={`Search items by ${searchParam}`}
         name='item_name'
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        value={searchVal}
+        onChange={(e) => setSearchVal(e.target.value)}
       />
-      <button>Search</button>
+      <button
+        type='submit'
+        onClick={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        Search
+      </button>
     </form>
   );
 }

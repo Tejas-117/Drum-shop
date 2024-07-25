@@ -18,8 +18,14 @@ type ResponseType = {
 } 
 
 async function fetchStoreData() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products?store=true`);
-  return await res.json();
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products?store=true`,
+      { next: {revalidate: 3600} }
+    );
+    return await res.json();
+  } catch (error) {
+    return { data: { categoryData: [] } };
+  }
 }
 
 async function Store() {

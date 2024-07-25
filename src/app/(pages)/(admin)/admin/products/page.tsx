@@ -1,20 +1,11 @@
-import styles from './products.module.css';
-import ProductsSearch from '@/app/components/admin/search/search';
+import ProductsContent from '@/app/components/admin/products/productsContent';
+import { Suspense } from 'react';
 
-async function AdminProductsPage({
-  searchParams,
-}: {
-  searchParams?: {
-    query?: string,
-  }
-}) {
-  // check for the query entered in the url
-  const searchQuery = searchParams?.query || '';
-
+function AdminProductsPage() {  
   return (
-    <main className={styles.main}>
-      <ProductsSearch />
-    </main>
+    <Suspense fallback={<p>Loading...</p>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
 

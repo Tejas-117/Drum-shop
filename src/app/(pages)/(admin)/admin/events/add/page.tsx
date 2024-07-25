@@ -42,8 +42,8 @@ function AddEvent() {
     // on input reset the state of the input element
     resetInputElement(name);
 
-    const newFormState: FormStateType = {...formState};
-    const keyname = name as keyof FormStateType;
+    const newFormState: EventType = {...formState};
+    const keyname = name as keyof EventType;
 
     if (keyname === 'featuredArtists') return;
 

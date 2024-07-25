@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './login.module.css';
 import Link from 'next/link';
 import LoginForm from '../../../components/loginForm/loginForm';
+import { Suspense } from 'react';
 
 function LoginPage() {
   return (
@@ -19,7 +20,10 @@ function LoginPage() {
       </div>
 
       {/* login form */}
-      <LoginForm />
+      {/* TODO: replace the fallback */}
+      <Suspense fallback={<p>Loading...</p>}>
+        <LoginForm />
+      </Suspense>
 
       {/* prompt user to register instead */}
       <div className={styles.user_signup_prompt}>

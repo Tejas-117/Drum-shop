@@ -1,6 +1,8 @@
 import styles from './contactUs.module.css';
 import { FaInstagram, FaSquareFacebook, FaYoutube, FaXTwitter, FaLinkedin } from 'react-icons/fa6';
 
+export const dynamic = 'force-static';
+
 function ContactUs() {
   return (
     <main className={styles.main}>

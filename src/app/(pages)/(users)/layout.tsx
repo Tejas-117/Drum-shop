@@ -4,7 +4,7 @@ import '@/app/globals.css'
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import { Toaster } from 'react-hot-toast';
-import { getUser } from '@/helpers/auth/getUser';
+// import { getUser } from '@/helpers/auth/getUser';
 import SetCartCookie from '@/app/components/setCartCookie/setCartCookie';
 
 // add the required fonts
@@ -30,7 +30,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userData = await getUser();
+  // const userData = await getUser();
 
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>

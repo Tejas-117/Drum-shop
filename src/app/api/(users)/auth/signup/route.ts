@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     // get the email from the req body
     const reqBody = await req.json();
     const email: string = reqBody.email;
+    const phone: string = reqBody.phone;
 
     // validate the data recieved
     const validationRes = UserValidationSchema.safeParse(reqBody);
@@ -38,7 +39,7 @@ export async function POST(req: NextRequest) {
     // check if the user is already registered
     const existingUser = await User.findOne({
       $or: [
-        { phone: email }, 
+        { phone: phone }, 
         { email: email }
       ]
     });

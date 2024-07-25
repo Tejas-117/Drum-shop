@@ -140,7 +140,7 @@ async function addProduct(cartProduct: CartProductType) {
 // function to remove an item from cart
 async function removeProduct(cartProductId: string) {
   try {
-    const user = getUserFromCookies();
+    const user = await getUserFromCookies();
 
     await dbConnect();
 
@@ -177,7 +177,7 @@ async function updateQuantity(
   quantityChange: number
 ) {
   try {
-    const user = getUserFromCookies();
+    const user = await getUserFromCookies();
 
     // get the quantity currently added in the cart by the user.
     const cart: (CartType | null) = await Cart.findOne(
