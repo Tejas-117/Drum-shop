@@ -12,7 +12,7 @@ import { IoIosArrowDown, IoMdAdd } from 'react-icons/io';
 import { BiHomeAlt2 } from 'react-icons/bi';
 import { AiOutlineProduct } from 'react-icons/ai';
 import { GrFormView } from 'react-icons/gr';
-import { RiCalendarEventLine } from 'react-icons/ri';
+import { RiCalendarEventLine, RiEditFill } from 'react-icons/ri';
 
 function Sidebar() {
   function toggleSubMenu(e: MouseEvent) {
@@ -47,13 +47,19 @@ function Sidebar() {
             <li>
               <Link href="/admin/products">
                 <GrFormView />
-                View all products
+                View products
               </Link>
             </li>
             <li>
               <Link href="/admin/products/add">
                 <IoMdAdd />
                 Add product
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/products/edit">
+                <RiEditFill />
+                Edit product
               </Link>
             </li>
           </ul>
@@ -76,7 +82,7 @@ function Sidebar() {
           <ul>
             <li>
               <Link href="/admin/events/edit">
-                <GrFormView />
+                <RiEditFill />
                 Edit event
               </Link>
             </li>

@@ -4,6 +4,7 @@ import { GrView } from 'react-icons/gr';
 import { RiEditFill } from 'react-icons/ri';
 import { MdDeleteForever } from 'react-icons/md';
 import { forwardRef } from 'react';
+import Link from 'next/link';
 
 interface AdminProductProps {
   product: ProductType,
@@ -33,7 +34,9 @@ const Product = forwardRef<HTMLTableRowElement, AdminProductProps>(({ product },
       <td>₹ {getPrice(product).toLocaleString('en-In')}</td>
       <td>{getQuantity(product).toLocaleString('en-In')}</td>
       <td className={styles.actions_cell}>
-        <GrView />
+        <Link href={`/products/${product._id}`} target='blank'>
+          <GrView />
+        </Link>
         <RiEditFill />
         <MdDeleteForever />
       </td>

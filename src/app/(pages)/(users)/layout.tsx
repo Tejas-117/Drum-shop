@@ -6,6 +6,7 @@ import Footer from '../../components/footer/footer';
 import { Toaster } from 'react-hot-toast';
 // import { getUser } from '@/helpers/auth/getUser';
 import SetCartCookie from '@/app/components/setCartCookie/setCartCookie';
+import { getUser } from '@/helpers/auth/getUser';
 
 // add the required fonts
 const inter = Inter({
@@ -30,7 +31,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const userData = await getUser();
+  const userData = await getUser();
 
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable}`}>
