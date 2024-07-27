@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { AddProductValidationSchema } from '@/validation/product';
 import Product from '@/models/product';
 import dbConnect from '@/lib/dbConnect';
+import { revalidatePath } from 'next/cache';
 
 const ROOT_DIR = process.cwd();
 const UPLOAD_DIR = join(ROOT_DIR, 'public', 'uploads');
@@ -80,6 +81,9 @@ export async function POST(req: NextRequest) {
     newProduct.images = imagePaths;
 
     await newProduct.save();
+
+    // revalidate the store cache
+    revalidatePath('/store');
 
     return NextResponse.json(
       { message: 'Successfully added product.' },

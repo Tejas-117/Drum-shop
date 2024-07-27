@@ -37,7 +37,9 @@ const Product = forwardRef<HTMLTableRowElement, AdminProductProps>(({ product },
         <Link href={`/products/${product._id}`} target='blank'>
           <GrView />
         </Link>
-        <RiEditFill />
+        <Link href={`/admin/products/${product._id}/edit`} target='blank'>
+          <RiEditFill />
+        </Link>
         <MdDeleteForever />
       </td>
     </tr>

@@ -19,8 +19,9 @@ type ResponseType = {
 
 async function fetchStoreData() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/products?store=true`,
-      { next: {revalidate: 3600} }
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?store=true`, 
+      { next: { revalidate: 3600 * 24 } } // cache for a day, unless revalidated
     );
     return await res.json();
   } catch (error) {

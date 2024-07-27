@@ -5,7 +5,7 @@ import { getUser } from '@/helpers/auth/getUser';
 async function fetchProduct(productId: string) {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${productId}`,
-    { next: {revalidate: 3600} }
+    { next: { revalidate: 3600 } } 
   );
   const data = await res.json();
 

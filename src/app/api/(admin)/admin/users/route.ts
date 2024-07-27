@@ -3,7 +3,7 @@ import User from '@/models/user';
 import { getSignUpValidationSchema } from '@/validation/user';
 import { NextRequest, NextResponse } from 'next/server';
 
-// TODO: this route can only be accessed by admin with privilege 'chief'
+// TODO: this route should only be accessed by admin with privilege 'chief'
 
 export async function GET() {
   try {
