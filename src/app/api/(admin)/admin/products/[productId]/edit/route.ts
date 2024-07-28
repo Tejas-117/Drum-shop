@@ -114,7 +114,7 @@ export async function PUT(
       imagesToDelete.forEach(async (imgToDelete) => {
         removeImgsIdx.add(imgToDelete.url);
         
-        const PUBLIC_DIR = join(ROOT_DIR, 'public', 'uploads');
+        const PUBLIC_DIR = join(ROOT_DIR, 'public');
         await unlink(`${PUBLIC_DIR}/${imgToDelete.url}`);        
       });
 

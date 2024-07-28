@@ -113,7 +113,9 @@ function ProductsContent() {
         });
       }
     } catch (error: any) {
-      
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

@@ -1,10 +1,13 @@
 import mongoose from 'mongoose';
+import { revalidatePath } from 'next/cache';
+import { unlink } from 'node:fs/promises'
+import { join } from 'node:path';
+
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/models/product';
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
 
-export async function GET(
+export async function DELETE(
   req: NextRequest, 
   { params }: { params: { productId: string }}
 ) {
@@ -24,8 +27,13 @@ export async function GET(
     const product = await Product.findById(productId);
 
     // delete the images
-    product.images.forEach((img) => {
+    console.log('Deleting images');
+    product.images.forEach(async (img: string) => {
       // delete each image
+      const ROOT_DIR = process.cwd();
+      const PUBLIC_DIR = join(ROOT_DIR, 'public');
+      console.log(`${PUBLIC_DIR}/${img}`);
+      await unlink(`${PUBLIC_DIR}/${img}`);
     });
 
     await Product.findByIdAndDelete(productId);
