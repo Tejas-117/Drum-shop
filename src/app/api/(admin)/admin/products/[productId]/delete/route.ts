@@ -26,13 +26,18 @@ export async function DELETE(
 
     const product = await Product.findById(productId);
 
-    // delete the images
-    console.log('Deleting images');
+    if (!product) {
+      return NextResponse.json(
+        { message: 'Product not found' },
+        { status: 400 }
+      );  
+    }
+
+    // // delete the images
     product.images.forEach(async (img: string) => {
       // delete each image
       const ROOT_DIR = process.cwd();
       const PUBLIC_DIR = join(ROOT_DIR, 'public');
-      console.log(`${PUBLIC_DIR}/${img}`);
       await unlink(`${PUBLIC_DIR}/${img}`);
     });
 
@@ -47,6 +52,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

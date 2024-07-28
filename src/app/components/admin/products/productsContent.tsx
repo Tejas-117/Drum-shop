@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { ClockLoader } from 'react-spinners';
+import { BarLoader, ClockLoader } from 'react-spinners';
 
 import styles from './productsContent.module.css';
 import AdminProduct from './product/product';
@@ -191,6 +191,41 @@ function ProductsContent() {
     }
   }, [searchVal]);
 
+  ////// The state and functions are used for product deletion /////// 
+  const [productToDelete, setProductToDelete] = useState<ProductType | null>(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deletingProduct, setDeletingProduct] = useState(false);
+
+  // function to delete the product
+  async function deleteProduct() {
+    if (!productToDelete) return;
+
+    setDeletingProduct(true);
+
+    try {     
+      const res = await axios.delete(`/api/admin/products/${productToDelete._id}/delete`);
+      const { message } = res.data;
+      
+      toast.success(message);
+
+      setShowDeletePopup(false);
+
+      // remove the product from the state
+      setSearchedProducts((prevState) => {
+        return prevState.filter((product) => product._id !== productToDelete._id);
+      });
+      setProducts((prevState) => {
+        return prevState.filter((product) => product._id !== productToDelete._id);
+      })
+    } catch (error: any) {
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage);
+    } finally {
+      setDeletingProduct(false);
+    }
+  }
+
   return (
     <main className={styles.main}>
       {/* search bar to search products */}
@@ -201,6 +236,28 @@ function ProductsContent() {
         setSearchVal={setSearchVal}
         handleSubmit={searchProduct}
       />
+
+      {/* pop up to verify the delete product action */}
+      {showDeletePopup && (
+        <div className={styles.delete_popup_container}>
+          <div className={styles.delete_popup}>
+            <p>
+              Do you want to delete this product? This action is irreversible.
+            </p>
+            <h4>{productToDelete?.name}</h4>
+
+            <div className={styles.delete_popup_actions}>
+              {deletingProduct ?
+                <BarLoader /> :
+                <>
+                  <button onClick={() => deleteProduct()}>Delete</button>
+                  <button onClick={() => setShowDeletePopup(false)}>Cancel</button>
+                </>  
+              }
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* display fetched products */}
       <section className={styles.product_container}>
@@ -221,7 +278,10 @@ function ProductsContent() {
                 return (
                   <AdminProduct 
                     key={idx} 
-                    product={product} />
+                    product={product} 
+                    setShowDeletePopup={setShowDeletePopup}
+                    setProductToDelete={setProductToDelete}
+                  />
                 )
               }) :
               products.map((product, idx) => {
@@ -231,6 +291,8 @@ function ProductsContent() {
                   <AdminProduct 
                     key={idx}
                     product={product} 
+                    setShowDeletePopup={setShowDeletePopup}
+                    setProductToDelete={setProductToDelete}
                     ref={(isLastProduct) ? lastProductRef : null}
                   />
                 )
