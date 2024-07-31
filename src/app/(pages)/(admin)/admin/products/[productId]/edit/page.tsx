@@ -450,8 +450,6 @@ function AddProduct() {
         tempImgs[1].isPrimary = true;
       }
 
-      console.log(tempImgs);
-
       return [...tempImgs];
     })
   }

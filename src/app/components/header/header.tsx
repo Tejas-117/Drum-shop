@@ -47,8 +47,7 @@ function Header({ cart }: { cart: (CartPropType | null) }) {
       <div className={styles.nav_links}>
         <ul>
           <li><Link href={'/store'}>Store</Link></li>
-          <li><a>Services</a></li>
-          <li><a>Events</a></li>
+          <li><Link href={'/events'}>Events</Link></li>
           <li><Link href={'/contactus'}>Contact Us</Link></li>
           <li style={{position: 'relative'}}>
             <Link href={'/cart'}>

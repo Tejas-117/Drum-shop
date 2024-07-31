@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   description: 'Ultimate place to get all your musical instruments',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

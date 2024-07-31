@@ -53,4 +53,4 @@ function AdsCarousel() {
   )
 }
 
-export default AdsCarousel
+export default AdsCarousel;

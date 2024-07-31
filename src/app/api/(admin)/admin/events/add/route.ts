@@ -5,6 +5,7 @@ import { AddEventValidationSchema } from '@/validation/event';
 import { NextRequest, NextResponse } from 'next/server';
 import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';
+import { revalidatePath } from 'next/cache';
 
 const ROOT_DIR = process.cwd();
 const UPLOAD_DIR = join(ROOT_DIR, 'public', 'uploads');
@@ -89,6 +90,9 @@ export async function POST(req: NextRequest) {
     }
 
     await newEvent.save();
+
+    // revalidate cache
+    revalidatePath('/events');
 
     return NextResponse.json(
       { message: 'Successfully saved event' },

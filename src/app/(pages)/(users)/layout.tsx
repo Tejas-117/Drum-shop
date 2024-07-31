@@ -4,7 +4,6 @@ import '@/app/globals.css'
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import { Toaster } from 'react-hot-toast';
-// import { getUser } from '@/helpers/auth/getUser';
 import SetCartCookie from '@/app/components/setCartCookie/setCartCookie';
 import { getUser } from '@/helpers/auth/getUser';
 

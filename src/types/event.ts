@@ -4,6 +4,7 @@ type ArtistType = {
 }
 
 type EventType = {
+  _id: string,
   name: string,
   date: string,
   time: string,
@@ -11,6 +12,9 @@ type EventType = {
   details: string,
   featuredArtists: ArtistType[],
   featuredProducts: string[],
+
+  poster: string,
+  media: string[]
 }
 
 export {

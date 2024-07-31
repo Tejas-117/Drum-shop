@@ -35,7 +35,7 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
   } = usePrevNextButtons(emblaApi)
 
   return (
-    <section className={`${styles.embla} ${props.classNames?.join(' ')}`}>
+    <section className={`${styles.embla} ${(props.classNames) ? props.classNames.join(' '): ''}`}>
       <div className={styles.embla__viewport} ref={emblaRef}>
         {/* carousel slides go here */}
         <div className={styles.embla__container}>

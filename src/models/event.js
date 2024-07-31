@@ -46,12 +46,16 @@ const eventSchema = new mongoose.Schema({
     type: String,
     minLength: [1, 'Event poster can\'t be empty'],
   },
+
+  // additional media for the event highlights
   media: [String],
   
   status: {
     type: String,
-    enum: ['ongoing', 'expired', 'highlights'],
+    enum: ['ongoing', 'highlights'],
   },
+}, {
+  timstamps: true
 });
 
 const Event = mongoose.models.events || mongoose.model('events', eventSchema);

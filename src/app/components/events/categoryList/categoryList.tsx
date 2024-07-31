@@ -1,60 +1,71 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { ProductType } from '@/types/product';
-import Product from '../product/product';
+import Event from '../event/event';
 import styles from './categoryList.module.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ClockLoader } from 'react-spinners';
-import { UserType } from '@/helpers/auth/getUser';
+import { EventType } from '@/types/event';
 
 type CategoryListPropType = {
   _id: string,
-  products: ProductType[],
+  events: EventType[],
 }
 
-function ProductCategoryList(
-  { categoryList, user }: { categoryList: CategoryListPropType, user: (UserType | null)}
+function EventCategoryList(
+  { categoryList }: { categoryList: CategoryListPropType }
 ) {
-  const [category, setCategory] = useState(categoryList._id);
+  const [status, setStatus] = useState(categoryList._id);
   
-  const productContainerRef = useRef<HTMLDivElement | null>(null);
+  const titeNameReference: { [key: string]: string } = {
+    'ongoing': 'upcoming events',
+    'highlights': 'previous events highlights'
+  }
 
-  // state to store the products fetched for this category
-  const [products, setProducts] = useState([...categoryList.products]);
+  const eventContainerRef = useRef<HTMLDivElement | null>(null);
   
+  // store all the fetched events
+  const [events, setEvents] = useState([...categoryList.events]);
+
   // next page number, start with 0
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5); // 5 products per page
+  const [limit, setLimit] = useState(5); // 5 events per page
 
   // state to switch pagination
-  const [disablePagination, setDisablePagination] = useState(categoryList.products.length < 5);
+  const [disablePagination, setDisablePagination] = useState(categoryList.events.length < 5);
 
   const [isLoading, setIsLoading] = useState(false);
 
   // refs required to implement intersection observer
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const lastProductRef = useRef<HTMLAnchorElement | null>(null);
+  const lastEventRef = useRef<HTMLAnchorElement | null>(null);
 
-  // function to fetch data when the last product is visible
-  async function onLastProductVisible() {
+  // function to fetch data when the last event is visible
+  async function onLastEventVisible() {
     if (disablePagination === true) return;
+
+    console.log('Last product visible');
 
     setIsLoading(true);
 
     try {
-      const res = await axios.get('/api/products', {
-        params: { page, limit, category }
+      const res = await axios.get('/api/events', {
+        params: { 
+          page, 
+          limit, 
+          status,
+          pagination: true,
+        }
       });
 
       const { data } = res.data;
 
-      if (data.products.length > 0) {
-        setProducts((prevData) => [...prevData, ...data.products]);
+      if (data.events.length > 0) {
+        setEvents((prevData) => [...prevData, ...data.events]);
         setPage((prevPage) => prevPage + 1);
       } 
       
-      if (data.products.length < 5) {
+      if (data.events.length < 5) {
         setDisablePagination(true);
       }
     } catch (error: any) {
@@ -66,7 +77,7 @@ function ProductCategoryList(
 
   useEffect(() => {
     // set the event listeners for the horizontal slider
-    const slider = productContainerRef.current;
+    const slider = eventContainerRef.current;
     if (!slider) return;
 
     let isDown = false;
@@ -76,19 +87,19 @@ function ProductCategoryList(
     const mouseDownListener = (e: MouseEvent) => {
       e.preventDefault();
       isDown = true;
-      slider.classList.add(`${styles.product_list_container_active}`);
+      slider.classList.add(`${styles.event_list_container_active}`);
       startX = e.pageX - slider.offsetLeft;
       scrollLeft = slider.scrollLeft;
     }
 
     const mouseLeaveListener = () => {
       isDown = false;
-      slider.classList.remove(`${styles.product_list_container_active}`);
+      slider.classList.remove(`${styles.event_list_container_active}`);
     }
 
     const mouseUpListener = () => {
       isDown = false;
-      slider.classList.remove(`${styles.product_list_container_active}`);
+      slider.classList.remove(`${styles.event_list_container_active}`);
     }
 
     const mouseMoveListener = (e: MouseEvent) => {
@@ -111,7 +122,7 @@ function ProductCategoryList(
       slider.removeEventListener('mouseup', mouseUpListener);
       slider.removeEventListener('mousemove', mouseMoveListener);
     }
-  }, [productContainerRef]);
+  }, [eventContainerRef]);
 
   useEffect(() => {
     if (observerRef.current) {
@@ -122,15 +133,15 @@ function ProductCategoryList(
     observerRef.current = new IntersectionObserver(
       async (entries) => {
         if ((entries[0].isIntersecting) && (!isLoading)) {
-          await onLastProductVisible();
+          await onLastEventVisible();
         }
       },
       { threshold: 0.4 }
     );
 
-    // observe the last product element
-    if (lastProductRef.current) {
-      observerRef.current.observe(lastProductRef.current);
+    // observe the last event element
+    if (lastEventRef.current) {
+      observerRef.current.observe(lastEventRef.current);
     }
 
     // Cleanup observer on component unmount
@@ -144,21 +155,20 @@ function ProductCategoryList(
   return (
     <div className={styles.category_list_container}>
       {/* main heading for the list */}
-      <h2>{categoryList._id.toUpperCase()}</h2>
+      <h2>{titeNameReference[status].toUpperCase()}</h2>
 
-      {/* display the list of the products for this category */}
+      {/* display the list of the events for this category */}
       <div 
-        ref={productContainerRef} 
-        className={styles.product_list_container}
+        ref={eventContainerRef} 
+        className={styles.event_list_container}
       >
-        {products.map((product, idx) => {
-          const isLastProduct = (products.length - 1 === idx);
+        {events.map((event, idx) => {
+          const isLastEvent = (events.length - 1 === idx);
           return (
-            <Product 
-              product={product}
-              key={product._id + idx} 
-              ref={isLastProduct ? lastProductRef : null}
-              user={user}
+            <Event 
+              event={event}
+              key={event._id + idx} 
+              ref={isLastEvent ? lastEventRef : null}
             />
           );
         })}
@@ -174,4 +184,4 @@ function ProductCategoryList(
   );
 }
 
-export default ProductCategoryList;
+export default EventCategoryList;
