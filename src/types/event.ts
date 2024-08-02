@@ -1,9 +1,11 @@
+import { ProductType } from "./product"
+
 type ArtistType = {
   name: string,
   link ?: string,
 }
 
-type EventType = {
+interface EventType {
   _id: string,
   name: string,
   date: string,
@@ -17,7 +19,12 @@ type EventType = {
   media: string[]
 }
 
+type EventWithFeaturedProducts = Omit<EventType, 'featuredProducts'> & {
+  featuredProducts: ProductType[],
+}
+
 export {
   type ArtistType,
-  type EventType
+  type EventType,
+  type EventWithFeaturedProducts,
 }

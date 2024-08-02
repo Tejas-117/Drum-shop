@@ -10,13 +10,23 @@ import styles from './addEvent.module.css';
 import { AddEventValidationSchema } from '@/validation/event';
 import { EventType, ArtistType } from '@/types/event';
 
+type FormStateType = {
+  name: string,
+  date: string,
+  time: string,
+  status: string,
+  details: string,
+  featuredArtists: ArtistType[],
+  featuredProducts: string[],
+}
+
 function AddEvent() {
   const [isLoading, setIsLoading] = useState(false);
 
-  const initialFormState: EventType = {
+  const initialFormState: FormStateType = {
     name: '',
     date: '',
-    time: '23:00',
+    time: '11:00',
     status: 'ongoing',
     details: '',
     featuredArtists: [],
@@ -42,8 +52,8 @@ function AddEvent() {
     // on input reset the state of the input element
     resetInputElement(name);
 
-    const newFormState: EventType = {...formState};
-    const keyname = name as keyof EventType;
+    const newFormState: FormStateType = {...formState};
+    const keyname = name as keyof FormStateType;
 
     if (keyname === 'featuredArtists') return;
 
@@ -208,7 +218,14 @@ function AddEvent() {
       
       // if all the data is valid, send data to the server
       const formData = new FormData();
+
+      // const eventData = {
+      //   ...formState,
+
+      // }
+
       formData.append('eventData', JSON.stringify(formState));      
+      
 
       if (poster) {
         formData.append('poster', poster);
@@ -348,6 +365,10 @@ function AddEvent() {
               accept='image/*'
               onChange={(e) => handleImageUpload(e, 'poster')}
             />
+
+            <span>
+              - Picture of dimension 1920x1280 would be ideal
+            </span>
           </div>
 
           {(formState.status === 'highlights') &&

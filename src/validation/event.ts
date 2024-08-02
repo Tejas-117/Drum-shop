@@ -34,7 +34,7 @@ const AddEventValidationSchema = z.object({
     .trim()
     .min(1, {message: 'Event details can\'t be empty'}),
   featuredArtists: z.array(featuredArtistSchema).optional(),
-  featuredProdcuts: z.array(z.string()).optional(),
+  featuredProducts: z.array(z.string()).optional(),
   status: z.enum(['ongoing', 'expired', 'highlights']),
 });
 

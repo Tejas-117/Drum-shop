@@ -12,15 +12,15 @@ function EventCarousel(
 
     const slide = (
       <div className={styles.event_carousel_slide}>
-        <Link href={`/events/${event._id}`}>
+        <Link href={`/events/${event._id}`} target='blank'>
           <img
             src={event.poster}
             alt={`${event.name} poster`}
           />
 
-          <div className={styles.title_name}>
+          {/* <div className={styles.title_name}>
             {event.name}
-          </div>
+          </div> */}
         </Link>
       </div>
     );

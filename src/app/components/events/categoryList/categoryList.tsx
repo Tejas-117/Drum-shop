@@ -44,8 +44,6 @@ function EventCategoryList(
   async function onLastEventVisible() {
     if (disablePagination === true) return;
 
-    console.log('Last product visible');
-
     setIsLoading(true);
 
     try {
