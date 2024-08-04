@@ -1,4 +1,4 @@
-import { ProductType } from "./product"
+import { ProductType } from './product'
 
 type ArtistType = {
   name: string,

@@ -1,16 +1,17 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { GrAdd } from 'react-icons/gr';
-import { BeatLoader } from 'react-spinners';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { GrAdd } from 'react-icons/gr';
+import { BeatLoader, ClockLoader } from 'react-spinners';
+import { MdDeleteForever } from 'react-icons/md';
 
-import styles from './addEvent.module.css';
+import styles from './editEvent.module.css';
 import { AddEventValidationSchema } from '@/validation/event';
-import { EventType, ArtistType } from '@/types/event';
-
-// TODO: add buttons and functionality to remove added artists and the products
+import { ArtistType, EventWithFeaturedProducts } from '@/types/event';
 
 type FormStateType = {
   name: string,
@@ -22,8 +23,17 @@ type FormStateType = {
   featuredProducts: string[],
 }
 
-function AddEvent() {
+function EditEventPage() {
+  const urlParams = useParams();
+  const eventId = urlParams.eventId;
+
+  const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchingEvent, setFetchingEvent] = useState(false);
+
+  // store the fetched event
+  const [event, setEvent] = useState<EventWithFeaturedProducts | null>(null);
 
   const initialFormState: FormStateType = {
     name: '',
@@ -35,19 +45,22 @@ function AddEvent() {
     featuredProducts: [],
   }
 
-  // state to input featuredArtists and featuredProducts
-  const [artistInput, setArtistInput] = useState<ArtistType>({
-    name: '',
-    link: ''
-  });
-  const [productInput, setProductInput] = useState('');
-
   // state to represent form state
   const [formState, setFormState] = useState(initialFormState);
 
-  // poster and additional media
+  // state to input featuredArtists and featuredProducts
+  const [artistInput, setArtistInput] = useState<ArtistType>({ name: '', link: '' });
+  const [productInput, setProductInput] = useState('');
+
+  // stores poster and additional media from the input
   const [poster, setPoster] = useState<File | null>(null);
   const [media, setMedia] = useState<FileList | null>(null);
+
+  // media marked for deletion
+  const [deleteMedia, setDeleteMedia] = useState<Set<string>>(new Set<string>());
+
+  // contains old products that are not deleted
+  const [oldProducts, setOldProducts] = useState<Set<string>>(new Set<string>());
 
   // function to update the form state
   function updateFormState(name: string, value: string) {
@@ -154,7 +167,6 @@ function AddEvent() {
       messageContainer.innerHTML = '';
     }
   }
-
   
   // function to handle image uploads
   function handleImageUpload(e: ChangeEvent<HTMLInputElement>, type: ('poster' | 'media')) {
@@ -212,22 +224,18 @@ function AddEvent() {
         const { path, message } = error;
         addClassToInformUser(path[0].toString(), 'invalid', message);
       });
-    } else if (!poster) {
-      // if the poster is not uploaded, display error
-      toast.error('Please upload poster of the event');
     } else { 
       setIsLoading(true);
       
       // if all the data is valid, send data to the server
       const formData = new FormData();
 
-      // const eventData = {
-      //   ...formState,
+      // add the remaining old featured products to the data
+      const formStateTemp = {...formState};
+      formStateTemp.featuredProducts = [...formState.featuredProducts, ...(Array.from(oldProducts))];
 
-      // }
-
-      formData.append('eventData', JSON.stringify(formState));      
-      
+      formData.append('eventData', JSON.stringify(formStateTemp));      
+      formData.append('deleteMedia', JSON.stringify(Array.from(deleteMedia)));
 
       if (poster) {
         formData.append('poster', poster);
@@ -241,7 +249,7 @@ function AddEvent() {
 
       try {
         const res = await axios.post(
-          '/api/admin/events/add',
+          `/api/admin/events/${eventId}/edit`,
           formData,
           {
             headers: {
@@ -253,24 +261,12 @@ function AddEvent() {
 
         const successMessage = res.data.message;
         toast.success(successMessage);
+        toast.success('Redirecting..');
 
-        // clear the form state
-        setFormState(initialFormState);
-        setMedia(null);
-        setPoster(null);
-
-        // reset input elements state
-        const form = document.querySelector(`.${styles.add_event_form}`);
-        const elements = form?.querySelectorAll('input, textarea');
-
-        elements?.forEach((element) => {
-          element.classList.remove(`${styles.input_valid}`);
-          element.classList.remove(`${styles.input_invalid}`);
-        });
-
-        // clear the images input
-        const imageInput: HTMLInputElement = document.querySelector('input[type="file"]')!;
-        imageInput.value = '';
+        // redirect the user to the edited event
+        setTimeout(() => {
+          router.push(`/events/${eventId}`);
+        }, 1500);
       } catch (error: any) {
         const errorData = error.response.data;
         const errorMessage = errorData.message;
@@ -281,12 +277,66 @@ function AddEvent() {
     }
   }
 
+  // fetch the event being edited
+  async function fetchEvent() {
+    setFetchingEvent(true);
+
+    try {
+      const res = await axios.get(`/api/admin/events/${eventId}`);
+      
+      const { event } = res.data;
+      setEvent(event);
+
+      // format the event to use it as form state
+      const tempEvent = {...event};
+      
+      const date = new Date(event.date);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+
+      const dateStr = `${year}-${month}-${day}`;
+      tempEvent.date = dateStr;
+
+      // remove the featured products and media for now
+      tempEvent.featuredProducts = [];
+      delete tempEvent['media'];      
+
+      setFormState(tempEvent);
+      setOldProducts(() => {
+        const productIds: string[] = event.featuredProducts.map((product: {_id: string}) => product._id);
+        return new Set(productIds);
+      });
+    } catch (error: any) {
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage);
+    } finally {
+      setFetchingEvent(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchEvent();
+  }, []);
+
   return (
     <main className={styles.main}>
-      <h1>Add a new event</h1>
+      <h1>Edit an event</h1>
+
+      {/* display this loader while fetching product data */}
+      {fetchingEvent && 
+        <div style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '2rem 0'
+        }}>
+          <ClockLoader />          
+        </div>
+      }
 
       <form 
-        className={styles.add_event_form}
+        className={styles.edit_event_form}
         onSubmit={(e) => handleSubmit(e)}
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
@@ -352,6 +402,7 @@ function AddEvent() {
               onChange={(e) => updateFormState('status', e.target.value)}
             >
               <option value="ongoing">Ongoing</option>
+              <option value="expired">Expired</option>
               <option value="highlights">Highlights</option>
             </select>
           </div>
@@ -368,11 +419,25 @@ function AddEvent() {
             />
 
             <span>
+              - Upload a new image to replace the poster <br />
               - Picture of dimension 1920x1280 would be ideal
             </span>
-          </div>
 
-          {(formState.status === 'highlights') &&
+            {/* display new poster or the old one */}
+            <div className={styles.poster}>
+              <img
+                src={(poster) ?
+                     URL.createObjectURL(poster) :
+                     (event?.poster)
+                    }
+                alt={`${event?.name} poster`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {(formState.status === 'highlights') &&
+          <div className={styles.form_part}>
             <div className={styles.form_control}>
               <label htmlFor="media">Additional media (for highlights)</label>
               <input
@@ -381,9 +446,62 @@ function AddEvent() {
                 multiple
                 onChange={(e) => handleImageUpload(e, 'media')}
               />
+
+              {/* display the currently uploaded media */}
+              {media &&
+                <div className={styles.current_media_outer_container}>
+                  <h3>Files chosen</h3>
+
+                  <div>
+                    {(Array.from(media).map((file, idx) => {
+                      return (
+                        <img 
+                          key={idx}
+                          src={URL.createObjectURL(file)}
+                          alt={`${event?.name || ''} media`}
+                        />
+                      )
+                    }))}
+                  </div>
+                </div>
+              }
+
+              {/* display the old media */}
+              {event && event.media &&
+                <div className={styles.old_media_outer_container}>
+                  <h3>Previously uploaded media</h3>
+
+                  <div className={styles.old_media_container}>
+                    {(event.media.map((url, idx) => {
+                      return (
+                        <div key={idx} className={styles.old_media}>
+                          <img                         
+                            src={url}
+                            alt={`${event.name} highlight ${idx+1}`}
+                          />
+                          <div>
+                            <span>Delete this file?</span>
+                            <input 
+                              type='checkbox'
+                              checked={deleteMedia.has(url)}
+                              onChange={() => {
+                                setDeleteMedia((prevState) => {
+                                  const newDelMedia = new Set(prevState);
+                                  newDelMedia.add(url);
+                                  return newDelMedia;
+                                })
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    }))}
+                  </div>
+                </div>
+              }
             </div>
-          }
-        </div>
+          </div>
+        }
 
         <div className={styles.form_part}>
           <div className={styles.form_control}>
@@ -433,13 +551,34 @@ function AddEvent() {
               />
             </div>
 
+            {/* display the artists added */}
             <div className={styles.added_artists}>
               {formState.featuredArtists.map((artist, idx) => {
                 return (
-                  <p key={idx}>
-                    <span>{artist.name}</span>
-                    <span>{artist.link}</span>
-                  </p>
+                  <div className={styles.artist} key={idx}>
+                    <p>
+                      <span>{artist.name}</span>
+                      {artist.link &&
+                        <Link href={artist.link}>{artist.link}</Link>
+                      }
+                    </p>
+                    <MdDeleteForever 
+                      className={styles.delete_artist_icon} 
+                      onClick={() => {
+                        // remove the artist
+                        setFormState((prevState) => {
+                          const tempArtists = prevState.featuredArtists.filter((featuredArtist) => {
+                            return (featuredArtist.name.toLowerCase() !== artist.name.toLowerCase())
+                          });
+
+                          return {
+                            ...prevState,
+                            featuredArtists: tempArtists,
+                          }
+                        });
+                      }}
+                    />
+                  </div>
                 );
               })}
             </div>
@@ -462,13 +601,54 @@ function AddEvent() {
               <GrAdd className={styles.add_input} onClick={() => addFeaturedProduct()} />
             </div>
 
+            {/* display the newly added products */}
             <div className={styles.featured_products_display}>
               {formState.featuredProducts.map((product, idx) => {
                 return (
                   <p key={idx}>{product}</p>
-                )
+                );
               })}
             </div>
+
+            {/* display the old featured products */}
+            {(oldProducts.size > 0) &&
+              (<>
+                <h3>Previosly featured products</h3>
+                <div className={styles.featured_products_old}>
+                  {event && event.featuredProducts.map((product, idx) => {
+                    // display the product only if it is not marked for deletion
+
+                    if (oldProducts.has(product._id) === false) {
+                      return null;
+                    }
+
+                    return (
+                      <div className={styles.old_product} key={idx}>
+                        <img 
+                          src={product.images[0]}
+                          alt={`${product.name} image`}
+                        />
+
+                        <div>
+                          <p>{product.name}</p>
+                          <button
+                            onClick={() => {
+                              setOldProducts((prevState) => {
+                                const newProductsSet = new Set(prevState);
+                                newProductsSet.delete(product._id);
+                                return newProductsSet;
+                              });
+                            }}
+                          >
+                            Remove this product
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>)
+            }
           </div>
         </div>
 
@@ -478,7 +658,7 @@ function AddEvent() {
         >
           {(isLoading === true) ?
             <BeatLoader color='white' /> :  
-            'Add Event'
+            'Edit Event'
           }
         </button>
       </form>
@@ -486,4 +666,4 @@ function AddEvent() {
   );
 }
 
-export default AddEvent
+export default EditEventPage;
