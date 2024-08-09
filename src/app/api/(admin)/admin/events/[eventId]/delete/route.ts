@@ -4,51 +4,53 @@ import { unlink } from 'node:fs/promises'
 import { join } from 'node:path';
 
 import dbConnect from '@/lib/dbConnect';
-import Product from '@/models/product';
 import { NextRequest, NextResponse } from 'next/server';
+import Event from '@/models/event';
+import { EventType } from '@/types/event';
 
 export async function DELETE(
   req: NextRequest, 
-  { params }: { params: { productId: string }}
+  { params }: { params: { eventId: string }}
 ) {
   try {
-    const { productId } = params;
+    const { eventId } = params;
 
-    // if the productId is invalid return error
-    if ((!productId) || (!mongoose.isValidObjectId(productId))) {
+    // if the eventId is invalid return error
+    if ((!eventId) || (!mongoose.isValidObjectId(eventId))) {
       return NextResponse.json(
-        { message: 'Invalid product id' },
+        { message: 'Invalid event id' },
         { status: 400 }
       );
     }
 
     await dbConnect();
 
-    const product = await Product.findById(productId);
+    const event: (EventType | null) = await Event.findById(eventId);
 
-    if (!product) {
+    if (!event) {
       return NextResponse.json(
-        { message: 'Product not found' },
+        { message: 'Event not found' },
         { status: 400 }
       );  
     }
 
     // // delete the images
-    product.images.forEach(async (img: string) => {
+    const eventMedia = [event.poster, ...event.media];
+    eventMedia.forEach(async (img: string) => {
       // delete each image
       const ROOT_DIR = process.cwd();
       const PUBLIC_DIR = join(ROOT_DIR, 'public');
       await unlink(`${PUBLIC_DIR}/${img}`);
     });
 
-    await Product.findByIdAndDelete(productId);
+    await Event.findByIdAndDelete(eventId);
 
-    // revalidate the cache of the productId and the store
-    revalidatePath('/store');
-    revalidatePath(`/products/${productId}`);
+    // revalidate the cache of the eventId and the store
+    revalidatePath('/events');
+    revalidatePath(`/events/${eventId}`);
 
     return NextResponse.json(
-      { message: 'Successfully deleted product' },
+      { message: 'Successfully deleted event' },
       { status: 200 }
     );
   } catch (error) {
