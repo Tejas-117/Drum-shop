@@ -69,9 +69,14 @@
   height: 80px;
   flex-shrink: 0;
   object-fit: cover;
+  overflow: hidden;
 }
 
-.small_img img,
+.small_img img {
+  width: 100%;
+  height: inherit;
+}
+
 .display_img img {
   width: 100%;
 }
@@ -107,7 +112,8 @@
 }
   
 .call_to_order {
-  width: 50%;
+  /* width: 50%; */
+  flex: 1;
   background-color: var(--white);
   color: var(--charcoal);
   border: 2px solid var(--charcoal);

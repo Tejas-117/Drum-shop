@@ -193,13 +193,21 @@ function Product(
 
           {/* cta buttons */}
           <div className={styles.cta_container}>
-            <button 
+            {/* <button 
               className={styles.add_to_cart}
               onClick={() => addProductToCart()}
             >
               Add to Cart
+            </button> */}
+            <button 
+              className={styles.call_to_order}
+              onClick={() => {
+                // TODO: change the telephone number
+                window.open('tel:+919740564850');
+              }}
+            >
+              Call to order
             </button>
-            <button className={styles.call_to_order}>Call to order</button>
           </div>
         </div>
 

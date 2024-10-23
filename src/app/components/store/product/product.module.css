@@ -40,6 +40,8 @@
 
 .product_image_container img {
   width: 100%;
+  height: inherit;
+  object-fit: cover;
 }
 
 .product_category {
