@@ -9,6 +9,13 @@ const eventSchema = new mongoose.Schema({
     minLength: [1, 'Event name can\'t be empty'],
     maxLength: [150, 'Event name can\'t exceed 150 characters'],
   },
+  location: {
+    type: String,
+    trim: true,
+    required: [true, 'Event location can\'t be empty'],
+    minLength: [1, 'Event location can\'t be empty'],
+    maxLength: [300, 'Event location can\'t exceed 300 characters'],
+  },
   date: {
     type: Date,
     required: [true, 'Event date can\'t be empty']
@@ -23,10 +30,16 @@ const eventSchema = new mongoose.Schema({
       message: 'Invalid event time format. Please use HH:MM format'
     }
   },
-  details: {
+  description: {
     type: String,
     trim: true,
     required: [true, 'Event details can\'t be empty'],
+  },
+  socialLinks: {
+    facebook: String,
+    instagram: String,
+    youtube: String,
+    x: String,
   },
 
   featuredArtists: [{
@@ -35,7 +48,8 @@ const eventSchema = new mongoose.Schema({
       required: [true, 'Artist name is required'],
       minLength: [1, 'Artist name can\'t be empty']
     },
-    link: String,
+    title: String,
+    image: String,
   }],
   featuredProducts: [{
     type: mongoose.Types.ObjectId,
@@ -47,9 +61,6 @@ const eventSchema = new mongoose.Schema({
     minLength: [1, 'Event poster can\'t be empty'],
   },
 
-  // additional media for the event highlights
-  media: [String],
-  
   status: {
     type: String,
     enum: ['ongoing', 'highlights'],

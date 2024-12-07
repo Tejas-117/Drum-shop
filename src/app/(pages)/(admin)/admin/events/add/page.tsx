@@ -14,6 +14,7 @@ import { EventType, ArtistType } from '@/types/event';
 
 type FormStateType = {
   name: string,
+  location: string,
   date: string,
   time: string,
   status: string,
@@ -27,6 +28,7 @@ function AddEvent() {
 
   const initialFormState: FormStateType = {
     name: '',
+    location: '',
     date: '',
     time: '11:00',
     status: 'ongoing',
@@ -296,37 +298,57 @@ function AddEvent() {
       >
         <div className={styles.form_part}>
           <div className={styles.form_control}>
-            <label htmlFor='name'>Name</label>
             <input 
               type='text'
               name='name'
               value={formState.name}
               onChange={(e) => updateFormState('name', e.target.value)}
               onBlur={(e) => validateField('name', e.target.value)}
+              placeholder='Event name'
             />
             <span data-name='name' className={styles.error_msg}></span>
           </div>
 
           <div className={styles.form_control}>
-            <label htmlFor='date'>Date</label>
             <input 
-              type='date'
+              type='text'
+              name='location'
+              value={formState.location}
+              onChange={(e) => updateFormState('location', e.target.value)}
+              onBlur={(e) => validateField('location', e.target.value)}
+              placeholder='Location'
+            />
+            <span data-name='name' className={styles.error_msg}></span>
+          </div>
+
+          <div className={styles.form_control}>
+            <input 
+              type='text'
               name='date'
               value={formState.date}
+              onFocus={(e) => e.target.type = 'date'}
               onChange={(e) => updateFormState('date', e.target.value)}
-              onBlur={(e) => validateField('date', e.target.value)}
+              onBlur={(e) => {
+                if (formState.date == '') e.target.type = 'text';
+                else validateField('date', e.target.value);
+              }}
+              placeholder='Date'
             />
             <span data-name='date' className={styles.error_msg}></span>
           </div>
 
           <div className={styles.form_control}>
-            <label htmlFor='time'>Time</label>
             <input 
-              type='time'
+              type='text'
               name='time'
               value={formState.time}
+              onFocus={(e) => e.target.type = 'time'}
               onChange={(e) => updateFormState('time', e.target.value)}
-              onBlur={(e) => validateField('time', e.target.value)}
+              onBlur={(e) => {
+                if (formState.time == '') e.target.type = 'text';
+                else validateField('time', e.target.value);
+              }}
+              placeholder='Time'
             />
             <span data-name='time' className={styles.error_msg}></span>
           </div>
