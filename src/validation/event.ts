@@ -20,6 +20,12 @@ const AddEventValidationSchema = z.object({
     .trim()
     .min(1, {message: 'Event name can\'t be empty'})
     .max(150, {message: 'Event name can\'t exceed 150 characters'}),
+  location: z.string({
+      required_error: 'Event location is required',
+    })
+    .trim()
+    .min(1, {message: 'Event location can\'t be empty'})
+    .max(150, {message: 'Event location can\'t exceed 150 characters'}),
   date: z.string({
       required_error: 'Event date is required',
     })

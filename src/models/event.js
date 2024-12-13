@@ -30,7 +30,7 @@ const eventSchema = new mongoose.Schema({
       message: 'Invalid event time format. Please use HH:MM format'
     }
   },
-  description: {
+  details: {
     type: String,
     trim: true,
     required: [true, 'Event details can\'t be empty'],
@@ -60,6 +60,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     minLength: [1, 'Event poster can\'t be empty'],
   },
+  media: [String],
 
   status: {
     type: String,

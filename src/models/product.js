@@ -84,7 +84,7 @@ const productSchema = new mongoose.Schema({
   timestamps: true,
 });
 
-productSchema.index({ name: 'text' });
+productSchema.index({ name: 'text', model: 'text' });
 productSchema.index({ hsnCode: 1 });
 
 const Product = mongoose.models.products || mongoose.model('products', productSchema);

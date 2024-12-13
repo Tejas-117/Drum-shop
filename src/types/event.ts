@@ -2,6 +2,7 @@ import { ProductType } from './product'
 
 type ArtistType = {
   name: string,
+  title: string,
   link ?: string,
 }
 

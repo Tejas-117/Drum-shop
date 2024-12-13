@@ -8,6 +8,7 @@ export async function GET(
   { params }: { params: { productId: string }}
 ) {
   // get the productId from dynamic url 
+  
   const { productId } = params;
 
   // if the productId is invalid mongodb objectId, return error.

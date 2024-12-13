@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       const posterExtension = poster.name.split('.').pop();
       const posterPath = `${UPLOAD_DIR}/${newEvent._id}_poster.${posterExtension}`;
       const posterUrl = `/uploads/${newEvent._id}_poster.${posterExtension}`;
-  
+      
       const bytes = await poster.arrayBuffer();
       const imgBuffer = Buffer.from(bytes);
       await writeFile(posterPath, imgBuffer);
@@ -84,6 +84,8 @@ export async function POST(req: NextRequest) {
         const bytes = await image.arrayBuffer();
         const imgBuffer = Buffer.from(bytes);
         await writeFile(imagePath, imgBuffer);
+
+        console.log('Uploaded media: ', mediaPaths);
       };
 
       newEvent.media = mediaPaths;
