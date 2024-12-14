@@ -11,6 +11,7 @@ const featuredArtistSchema = z.object({
       required_error: 'Artist name can\'t be empty'
     }).trim(),
   link: z.string().trim().nullable().optional(),
+  title: z.string().trim().nullable().optional(),
 });
 
 const AddEventValidationSchema = z.object({
@@ -39,6 +40,12 @@ const AddEventValidationSchema = z.object({
     })
     .trim()
     .min(1, {message: 'Event details can\'t be empty'}),
+  socialLinks: z.object({
+    instagram: z.string().trim().nullable().optional(),
+    facebook: z.string().trim().nullable().optional(),
+    youtube: z.string().trim().nullable().optional(),
+    x: z.string().trim().nullable().optional(),
+  }),
   featuredArtists: z.array(featuredArtistSchema).optional(),
   featuredProducts: z.array(z.string()).optional(),
   status: z.enum(['ongoing', 'expired', 'highlights']),

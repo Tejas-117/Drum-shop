@@ -1,66 +1,91 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa6';
+import { BsTwitterX } from 'react-icons/bs';
+import { FiEdit2 } from 'react-icons/fi';
+import { IoMdAdd } from 'react-icons/io';
+
+import { BeatLoader } from 'react-spinners';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { GrAdd } from 'react-icons/gr';
-import { BeatLoader, ClockLoader } from 'react-spinners';
-import { MdDeleteForever } from 'react-icons/md';
 
 import styles from './editEvent.module.css';
 import { AddEventValidationSchema } from '@/validation/event';
-import { ArtistType, EventWithFeaturedProducts } from '@/types/event';
+import { ArtistType, EventType } from '@/types/event';
+import { MdDeleteForever } from 'react-icons/md';
+import { ImCancelCircle } from 'react-icons/im';
+import { FaSearch } from 'react-icons/fa';
+import { ProductType } from '@/types/product';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { useParams, useRouter } from 'next/navigation';
+
+// TODO: add buttons and functionality to remove added artists and the products
 
 type FormStateType = {
   name: string,
+  location: string,
   date: string,
   time: string,
   status: string,
   details: string,
   featuredArtists: ArtistType[],
   featuredProducts: string[],
+  socialLinks: {
+    facebook: string,
+    instagram: string,
+    youtube: string,
+    x: string,
+  }
 }
 
-function EditEventPage() {
-  const urlParams = useParams();
-  const eventId = urlParams.eventId;
-
+function AddEvent() {
   const router = useRouter();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [fetchingEvent, setFetchingEvent] = useState(false);
+  const urlParams = useParams<{eventId: string}>();
+  const { eventId } = urlParams;
 
-  // store the fetched event
-  const [event, setEvent] = useState<EventWithFeaturedProducts | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [eventData, setEventData] = useState<EventType | null>(null);
 
   const initialFormState: FormStateType = {
     name: '',
+    location: '',
     date: '',
     time: '11:00',
     status: 'ongoing',
     details: '',
     featuredArtists: [],
     featuredProducts: [],
+    socialLinks: {
+      facebook: '',
+      instagram: '',
+      youtube: '',
+      x: '',
+    },
   }
+
+  // state to input featuredArtists and featuredProducts
+  const [showArtistInput, setShowArtistInput] = useState(false);
+  const [artistInput, setArtistInput] = useState<ArtistType>({
+    name: '',
+    title: '',
+    link: ''
+  });
+
+  const [showProductInputPopup, setShowProductInputPopup] = useState(false);
+  const [searchProductQuery, setSearchProductQuery] = useState('');
+  const [searchedProducts, setSearchedProducts] = useState<ProductType[]>([]);
+  const [featuredProductDetails, setFeaturedProductDetails] = useState<ProductType[]>([]);
 
   // state to represent form state
   const [formState, setFormState] = useState(initialFormState);
 
-  // state to input featuredArtists and featuredProducts
-  const [artistInput, setArtistInput] = useState<ArtistType>({ name: '', link: '' });
-  const [productInput, setProductInput] = useState('');
-
-  // stores poster and additional media from the input
+  // poster and additional media
   const [poster, setPoster] = useState<File | null>(null);
-  const [media, setMedia] = useState<FileList | null>(null);
-
-  // media marked for deletion
+  const [media, setMedia] = useState<File[]>([]);
   const [deleteMedia, setDeleteMedia] = useState<Set<string>>(new Set<string>());
-
-  // contains old products that are not deleted
-  const [oldProducts, setOldProducts] = useState<Set<string>>(new Set<string>());
+  const [displayImgs, setDisplayImgs] = useState<string[]>([]);
 
   // function to update the form state
   function updateFormState(name: string, value: string) {
@@ -70,15 +95,29 @@ function EditEventPage() {
     const newFormState: FormStateType = {...formState};
     const keyname = name as keyof FormStateType;
 
-    if (keyname === 'featuredArtists') return;
-
-    if (keyname === 'featuredProducts') {
-      newFormState[keyname].push(value);
-    } else {
-      newFormState[keyname] = value;
+    if (keyname === 'featuredArtists' ||
+        keyname === 'socialLinks' || 
+        keyname === 'featuredProducts') {
+      return;
     }
 
+    newFormState[keyname] = value;
     setFormState(newFormState);
+  }
+
+  // function to update social link
+  function updateSocialLink(name: string, value: string) {
+    setFormState((prevState) => {
+      const updatedLinks = {
+        ...prevState.socialLinks,
+        [name]: value,
+      };
+
+      return {
+        ...prevState,
+        socialLinks: updatedLinks,
+      }
+    });
   }
 
   // function to add the artist entered to the form state
@@ -89,20 +128,9 @@ function EditEventPage() {
         featuredArtists: [...prevData.featuredArtists, artistInput],
       }
     }));
-    setArtistInput({name: '', link: ''});
+    setArtistInput({name: '', title: '', link: ''});
   }
   
-  // function to add a featured product to form state
-  function addFeaturedProduct() {
-    setFormState((prevData) => {
-      return {
-        ...prevData,
-        featuredProducts: [...prevData.featuredProducts, productInput],
-      }
-    });
-    setProductInput('');
-  }
-
   // function to validate fields
   function validateField(name: string, value: (string | number)) {
     // get the appopriate schema for the field
@@ -173,14 +201,13 @@ function EditEventPage() {
     if (!e.target.files) return;
     
     if (type === 'media') {
-      const images = Array.from(e.target.files);
-      setMedia(e.target.files);
+      const images = (e.target.files);
       
       let invalidFileType = 0;
       let invalidFileSize = 0;
 
       // reject files that are above limited size and create object url to display
-      const fileUrls = images
+      const filteredFiles = Array.from(images)
                         .filter(img => {
                           if (img.type.split('/')[0] === 'image') {
                             return true;
@@ -188,10 +215,11 @@ function EditEventPage() {
                             invalidFileType += 1;
                           }
                         })
-                        .map(img => URL.createObjectURL(img)) 
+
+      const fileUrls = filteredFiles.map(img => URL.createObjectURL(img)) 
       
-      
-      // setDisplayImgs(fileUrls);
+      setMedia(filteredFiles);
+      setDisplayImgs(fileUrls);
 
       // display warning message if any files were rejected
       if (invalidFileSize > 0) {
@@ -211,9 +239,7 @@ function EditEventPage() {
   }
 
   // function to submit the data to the api
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
+  async function handleSubmit() {
     // validate the user input
     const validationRes = AddEventValidationSchema.safeParse(formState);
 
@@ -230,13 +256,9 @@ function EditEventPage() {
       // if all the data is valid, send data to the server
       const formData = new FormData();
 
-      // add the remaining old featured products to the data
-      const formStateTemp = {...formState};
-      formStateTemp.featuredProducts = [...formState.featuredProducts, ...(Array.from(oldProducts))];
-
-      formData.append('eventData', JSON.stringify(formStateTemp));      
-      formData.append('deleteMedia', JSON.stringify(Array.from(deleteMedia)));
-
+      formData.append('eventData', JSON.stringify(formState));   
+      formData.append('deleteMedia', JSON.stringify(Array.from(deleteMedia)));   
+      
       if (poster) {
         formData.append('poster', poster);
       }
@@ -258,7 +280,6 @@ function EditEventPage() {
             withCredentials: true,
           }
         );
-
         const successMessage = res.data.message;
         toast.success(successMessage);
         toast.success('Redirecting..');
@@ -277,15 +298,82 @@ function EditEventPage() {
     }
   }
 
-  // fetch the event being edited
-  async function fetchEvent() {
-    setFetchingEvent(true);
+  // function to search products based on the query entered
+  async function searchProducts() {
+    if (searchProductQuery.length == 0) return;
+
+    setIsLoading(true);
+
+    try {
+      const res = await axios.get(
+        `/api/products/search?query=${searchProductQuery}`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      const products = res.data.products;
+      setSearchedProducts(products);
+      console.log(products);
+    } catch (error: any) {
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  // function to add the clicked product to the featured products
+  function addProductToFeaturedProducts(addProduct: ProductType) {
+    const addProductId = addProduct._id;
+    const newFeaturedProducts = [...formState.featuredProducts];
+    const productIdx = newFeaturedProducts.findIndex((product, i) => product === addProductId);
+    
+    setFormState((prevState) => {
+      if (productIdx != -1) return prevState;
+      else newFeaturedProducts.push(addProductId);
+
+      return {
+        ...prevState,
+        featuredProducts: newFeaturedProducts
+      }
+    });
+
+    setFeaturedProductDetails((prevState) => {
+      if (productIdx != -1) return prevState;
+      return [...prevState, addProduct];
+    })
+  }
+
+  // function to remove the product from the featured products
+  function removeProductFromFeaturedProducts(product: ProductType) {
+    const productId = product._id;
+
+    // remove the product from the formState.featuredProducts
+    setFormState((prevState) => {
+      const newFeaturedProducts = prevState.featuredProducts.filter((featuredProduct) => featuredProduct !== productId);
+      return {
+        ...prevState,
+        featuredProducts: newFeaturedProducts,
+      };
+    });
+
+    // remove the product from the featuredProductDetails
+    setFeaturedProductDetails((prevState) => {
+      return prevState.filter((featuredProduct) => featuredProduct._id != productId);
+    });
+  }
+
+  // function to fetch initial data of the event
+  async function fetchData() {
+    setIsLoading(true);
 
     try {
       const res = await axios.get(`/api/admin/events/${eventId}`);
       
       const { event } = res.data;
-      setEvent(event);
+      setEventData(event);
 
       // format the event to use it as form state
       const tempEvent = {...event};
@@ -298,372 +386,510 @@ function EditEventPage() {
       const dateStr = `${year}-${month}-${day}`;
       tempEvent.date = dateStr;
 
-      // remove the featured products and media for now
-      tempEvent.featuredProducts = [];
+      // update featuredProducts
+      tempEvent.featuredProducts = event.featuredProducts.map((product: {_id: string}) => product._id);
+      
+      // remove media and poster for now
       delete tempEvent['media'];      
-
+      delete tempEvent['poster'];
+      
       setFormState(tempEvent);
-      setOldProducts(() => {
-        const productIds: string[] = event.featuredProducts.map((product: {_id: string}) => product._id);
-        return new Set(productIds);
-      });
-    } catch (error: any) {
-      const errorData = error.response.data;
-      const errorMessage = errorData.message;
-      toast.error(errorMessage);
+      setFeaturedProductDetails(event.featuredProducts);
+    } catch (error) {
+      toast.error('Error while fetching event');
     } finally {
-      setFetchingEvent(false);
+      setIsLoading(false);
     }
   }
 
+  // disable scrolling when the pop is being displayed
   useEffect(() => {
-    fetchEvent();
+    if (showProductInputPopup) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+  }, [showProductInputPopup]);
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
     <main className={styles.main}>
-      <h1>Edit an event</h1>
+      <div className={styles.primary_heading}>
+        <h1>EVENT INFO</h1>
 
-      {/* display this loader while fetching product data */}
-      {fetchingEvent && 
-        <div style={{ 
-          display: 'flex',
-          justifyContent: 'center',
-          margin: '2rem 0'
-        }}>
-          <ClockLoader />          
+        <div className={styles.event_actions}>
+          <button 
+            className={styles.cancel_action}
+            onClick={(e) => router.push('/events')}
+          >
+            Cancel
+          </button>
+          <button 
+            className={styles.save_action} 
+            onClick={(e) => handleSubmit()}
+          >
+            {(isLoading === true) ? 
+              <BeatLoader /> :
+              'Save'
+            }
+          </button>
         </div>
-      }
+      </div>
 
       <form 
-        className={styles.edit_event_form}
-        onSubmit={(e) => handleSubmit(e)}
-        onKeyDown={(e) => {
-          if (e.code === 'Enter') {
-            e.preventDefault();
-          }
-        }}
+        className={styles.add_event_form}
       >
-        <div className={styles.form_part}>
-          <div className={styles.form_control}>
-            <label htmlFor='name'>Name</label>
-            <input 
-              type='text'
-              name='name'
-              value={formState.name}
-              onChange={(e) => updateFormState('name', e.target.value)}
-              onBlur={(e) => validateField('name', e.target.value)}
-            />
-            <span data-name='name' className={styles.error_msg}></span>
-          </div>
+        <div className={styles.left_grid}>
+          <div className={styles.form_part}>
+            <h2 className={styles.section_heading}>BASIC INFORMATION</h2>
 
-          <div className={styles.form_control}>
-            <label htmlFor='date'>Date</label>
-            <input 
-              type='date'
-              name='date'
-              value={formState.date}
-              onChange={(e) => updateFormState('date', e.target.value)}
-              onBlur={(e) => validateField('date', e.target.value)}
-            />
-            <span data-name='date' className={styles.error_msg}></span>
-          </div>
+            <div className={styles.form_control}>
+              <label htmlFor="name">Name</label>
 
-          <div className={styles.form_control}>
-            <label htmlFor='time'>Time</label>
-            <input 
-              type='time'
-              name='time'
-              value={formState.time}
-              onChange={(e) => updateFormState('time', e.target.value)}
-              onBlur={(e) => validateField('time', e.target.value)}
-            />
-            <span data-name='time' className={styles.error_msg}></span>
-          </div>
-        </div>
+              <input 
+                type='text'
+                name='name'
+                value={formState.name}
+                onChange={(e) => updateFormState('name', e.target.value)}
+                onBlur={(e) => validateField('name', e.target.value)}
+              />
+              <span data-name='name' className={styles.error_msg}></span>
+            </div>
 
-        <div className={styles.form_part}>
-          <div className={styles.form_control}>
-            <label htmlFor='details'>Details</label>
-            <textarea 
-              name='details' 
-              value={formState.details}
-              onChange={(e) => updateFormState('details', e.target.value)}
-              onBlur={(e) => validateField('details', e.target.value)}
-            />
-            <span data-name='details' className={styles.error_msg}></span>
-          </div>
+            <div className={styles.form_control}>
+              <label htmlFor="location">Location</label>
 
-          <div className={styles.form_control}>
-            <label htmlFor="status">Status</label>
-            <select 
-              name="status"
-              value={formState.status}
-              onChange={(e) => updateFormState('status', e.target.value)}
-            >
-              <option value="ongoing">Ongoing</option>
-              <option value="expired">Expired</option>
+              <input 
+                type='text'
+                name='location'
+                value={formState.location}
+                onChange={(e) => updateFormState('location', e.target.value)}
+                onBlur={(e) => validateField('location', e.target.value)}
+              />
+              <span data-name='name' className={styles.error_msg}></span>
+            </div>
+
+            <div className={styles.form_control}>
+              <label htmlFor="date">Date</label>
+
+              <input 
+                type='date'
+                name='date'
+                value={formState.date}
+                onFocus={(e) => e.target.type = 'date'}
+                onChange={(e) => updateFormState('date', e.target.value)}
+                onBlur={(e) => {
+                  validateField('date', e.target.value);
+                }}
+              />
+              <span data-name='date' className={styles.error_msg}></span>
+            </div>
+            
+            <div className={styles.form_control}>
+              <label htmlFor='time'>Time</label>
+
+              <input 
+                type='text'
+                name='time'
+                value={formState.time}
+                onFocus={(e) => e.target.type = 'time'}
+                onChange={(e) => updateFormState('time', e.target.value)}
+                onBlur={(e) => {
+                  validateField('time', e.target.value);
+                }}
+                placeholder='Time'
+              />
+              <span data-name='time' className={styles.error_msg}></span>
+            </div>
+
+            <div className={styles.form_control}>
+              <label htmlFor='status'>Status</label>
+
+              <select 
+                value={formState.status}
+                onChange={(e) => updateFormState('status', e.target.value)}
+              >
+              <option value="ongoing">On going</option>
               <option value="highlights">Highlights</option>
             </select>
-          </div>
-        </div>
-
-        <div className={styles.form_part}>
-          <div className={styles.form_control}>
-            <label htmlFor='poster'>Poster</label>
-            <input 
-              type='file' 
-              name='poster'
-              accept='image/*'
-              onChange={(e) => handleImageUpload(e, 'poster')}
-            />
-
-            <span>
-              - Upload a new image to replace the poster <br />
-              - Picture of dimension 1920x1280 would be ideal
-            </span>
-
-            {/* display new poster or the old one */}
-            <div className={styles.poster}>
-              <img
-                src={(poster) ?
-                     URL.createObjectURL(poster) :
-                     (event?.poster)
-                    }
-                alt={`${event?.name} poster`}
-              />
             </div>
           </div>
-        </div>
+          
+          {(formState.status === 'highlights') &&
+            <div className={styles.form_part}>
+              <h2 className={styles.section_heading}>EVENT MEDIA</h2>
 
-        {(formState.status === 'highlights') &&
-          <div className={styles.form_part}>
-            <div className={styles.form_control}>
-              <label htmlFor="media">Additional media (for highlights)</label>
-              <input
-                type="file"
-                name='media'
-                multiple
-                onChange={(e) => handleImageUpload(e, 'media')}
-              />
-
-              {/* display the currently uploaded media */}
-              {media &&
-                <div className={styles.current_media_outer_container}>
-                  <h3>Files chosen</h3>
-
-                  <div>
-                    {(Array.from(media).map((file, idx) => {
-                      return (
-                        <img 
-                          key={idx}
-                          src={URL.createObjectURL(file)}
-                          alt={`${event?.name || ''} media`}
-                        />
-                      )
-                    }))}
-                  </div>
-                </div>
-              }
-
-              {/* display the old media */}
-              {event && event.media &&
-                <div className={styles.old_media_outer_container}>
-                  <h3>Previously uploaded media</h3>
-
-                  <div className={styles.old_media_container}>
-                    {(event.media.map((url, idx) => {
-                      return (
-                        <div key={idx} className={styles.old_media}>
-                          <img                         
-                            src={url}
-                            alt={`${event.name} highlight ${idx+1}`}
-                          />
-                          <div>
-                            <span>Delete this file?</span>
-                            <input 
-                              type='checkbox'
-                              checked={deleteMedia.has(url)}
-                              onChange={() => {
-                                setDeleteMedia((prevState) => {
-                                  const newDelMedia = new Set(prevState);
-                                  newDelMedia.add(url);
-                                  return newDelMedia;
-                                })
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )
-                    }))}
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        }
-
-        <div className={styles.form_part}>
-          <div className={styles.form_control}>
-            <label htmlFor="artist">Featured artists</label>
-
-            <div className={styles.artist_input}>
-              <div>
-                <label htmlFor="artistName">Name</label>
-                <input
-                  type="text"
-                  name='artist'
-                  placeholder='Enter artist name'
-                  value={artistInput.name}
-                  onChange={(e) => {
-                    setArtistInput((prevData) => {
-                      return {
-                        ...prevData,
-                        name: e.target.value,
-                      }
-                    })
-                  }}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="artistLink">Link (if any)</label>
-                <input
-                  type="text"
-                  name='link'
-                  placeholder='Enter any link related to artist'
-                  value={artistInput.link}
-                  onChange={(e) => {
-                    setArtistInput((prevData) => {
-                      return {
-                        ...prevData,
-                        link: e.target.value,
-                      }
-                    })
-                  }}
-                />
-              </div>
-
-              <GrAdd 
-                className={styles.add_input}
-                onClick={() => addFeaturedArtist()} 
-                style={{marginTop: '1.5rem'}}
-              />
-            </div>
-
-            {/* display the artists added */}
-            <div className={styles.added_artists}>
-              {formState.featuredArtists.map((artist, idx) => {
-                return (
-                  <div className={styles.artist} key={idx}>
-                    <p>
-                      <span>{artist.name}</span>
-                      {artist.link &&
-                        <Link href={artist.link}>{artist.link}</Link>
-                      }
-                    </p>
-                    <MdDeleteForever 
-                      className={styles.delete_artist_icon} 
-                      onClick={() => {
-                        // remove the artist
-                        setFormState((prevState) => {
-                          const tempArtists = prevState.featuredArtists.filter((featuredArtist) => {
-                            return (featuredArtist.name.toLowerCase() !== artist.name.toLowerCase())
-                          });
-
-                          return {
-                            ...prevState,
-                            featuredArtists: tempArtists,
-                          }
-                        });
-                      }}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>          
-        </div>
-
-        <div className={styles.form_part}>
-          <div className={styles.form_control}>
-            <label htmlFor="featuredProduct">Featured products</label>
-
-            <div className={styles.product_input}>
-              <input
-                type="text"
-                name='featuredProduct'
-                placeholder='Enter featured product id'
-                value={productInput}
-                onChange={(e) => setProductInput(e.target.value)}
-              />
-
-              <GrAdd className={styles.add_input} onClick={() => addFeaturedProduct()} />
-            </div>
-
-            {/* display the newly added products */}
-            <div className={styles.featured_products_display}>
-              {formState.featuredProducts.map((product, idx) => {
-                return (
-                  <p key={idx}>{product}</p>
-                );
-              })}
-            </div>
-
-            {/* display the old featured products */}
-            {(oldProducts.size > 0) &&
-              (<>
-                <h3>Previosly featured products</h3>
-                <div className={styles.featured_products_old}>
-                  {event && event.featuredProducts.map((product, idx) => {
-                    // display the product only if it is not marked for deletion
-
-                    if (oldProducts.has(product._id) === false) {
-                      return null;
-                    }
-
+              {/* display added media files */}
+              <div className={styles.added_pictures}>
+                {(displayImgs.length > 0) &&
+                  displayImgs.map((img, idx) => {
                     return (
-                      <div className={styles.old_product} key={idx}>
+                      <img src={img} key={idx} />
+                    )
+                  })
+                }
+              </div>
+
+              {/* display pictures to be deleted */}
+              <div className={styles.prev_pictures_outer_container}>
+                <h3 className={styles.section_heading}>PREVIOUSLY ADDED MEDIA</h3>
+
+                <div className={styles.prev_pictures_container}>
+                  {eventData?.media.map((url, idx) => {
+                    return (
+                      <div className={styles.prev_picture} key={idx}>
                         <img 
-                          src={product.images[0]}
-                          alt={`${product.name} image`}
+                          src={url} 
+                          alt={`${eventData.name} highlight ${idx+1}`}
                         />
 
                         <div>
-                          <p>{product.name}</p>
-                          <button
-                            onClick={() => {
-                              setOldProducts((prevState) => {
-                                const newProductsSet = new Set(prevState);
-                                newProductsSet.delete(product._id);
-                                return newProductsSet;
-                              });
+                          <span>Delete this file?</span>
+                          <input 
+                            type='checkbox'
+                            checked={deleteMedia.has(url)}
+                            onChange={(e) => {
+                              setDeleteMedia((prevState) => {
+                                const newDelMedia = new Set(prevState);
+                                
+                                if (e.target.checked) newDelMedia.add(url);
+                                else newDelMedia.delete(url);
+                                
+                                return newDelMedia;
+                              })
                             }}
-                          >
-                            Remove this product
-                          </button>
+                          />
                         </div>
                       </div>
-                    );
+                    )
                   })}
                 </div>
-              </>)
-            }
+              </div>
+
+              <div className={styles.form_control}>
+                <input 
+                  type='file' 
+                  name='poster'
+                  accept='image/*'
+                  multiple
+                  onChange={(e) => handleImageUpload(e, 'media')}
+                />
+
+                <span>
+                  - Picture of dimension 1920x1280 would be ideal
+                </span>
+              </div>              
+            </div>
+          }
+
+          <div className={styles.form_part}>
+            <h2 className={styles.section_heading}>EVENT DESCRIPTION</h2>
+
+            <div className={styles.form_control}>
+              <label htmlFor='details'>Details</label>
+              <textarea 
+                name='details' 
+                value={formState.details}
+                onChange={(e) => updateFormState('details', e.target.value)}
+                onBlur={(e) => validateField('details', e.target.value)}
+              />
+              <span data-name='details' className={styles.error_msg}></span>
+            </div>
           </div>
         </div>
 
-        <button
-          className={styles.submit_btn}
-          type='submit'
-        >
-          {(isLoading === true) ?
-            <BeatLoader color='white' /> :  
-            'Edit Event'
-          }
-        </button>
+        <div className={styles.right_grid}>
+          <div className={styles.form_part}>
+            <h2 className={styles.section_heading}>EVENT POSTER</h2>
+
+            {poster ?
+              <img 
+                className={styles.display_poster}
+                src={URL.createObjectURL(poster)} 
+                alt='uploaded poster of the event' 
+              /> :
+              <img 
+                className={styles.display_poster}
+                src={eventData?.poster} 
+                alt='Poster of the event' 
+              />
+            }
+
+            <div className={styles.form_control}>
+              <input 
+                type='file' 
+                name='poster'
+                accept='image/*'
+                onChange={(e) => handleImageUpload(e, 'poster')}
+              />
+
+              <span>
+                - Picture of dimension 1920x1280 would be ideal
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.form_part}>
+            <h2 className={styles.section_heading}>SOCIAL LINKS</h2>
+
+            <div>
+              <div className={`${styles.form_control} ${styles.form_control_social}`}>
+                <FaInstagram className={styles.social_icon} />
+                <input 
+                  type='text' 
+                  value={formState.socialLinks.instagram}
+                  onChange={(e) => updateSocialLink('instagram', e.target.value)}
+                />
+              </div>
+              <div className={`${styles.form_control} ${styles.form_control_social}`}>
+                <FaFacebook className={styles.social_icon} />
+                <input 
+                  type='text' 
+                  value={formState.socialLinks.facebook}
+                  onChange={(e) => updateSocialLink('facebook', e.target.value)}
+                />
+              </div>
+              <div className={`${styles.form_control} ${styles.form_control_social}`}>
+                <FaYoutube className={styles.social_icon} />
+                <input 
+                  type='text' 
+                  value={formState.socialLinks.youtube}
+                  onChange={(e) => updateSocialLink('youtube', e.target.value)}
+                />
+              </div>
+              <div className={`${styles.form_control} ${styles.form_control_social}`}>
+                <BsTwitterX className={styles.social_icon} />
+                <input 
+                  type='text' 
+                  value={formState.socialLinks.x}
+                  onChange={(e) => updateSocialLink('x', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.form_part}>
+            <div className={styles.section_heading_container}>
+              <h2 className={styles.section_heading}>SPECIAL GUESTS</h2>
+              <div
+                className={styles.icon_container}
+                onClick={() => setShowArtistInput(true)}
+              >
+                <FiEdit2 />
+              </div>
+            </div>
+
+            {/* display all the added artists */}
+            {(formState.featuredArtists.length > 0) &&
+              (<div className={styles.featured_artists_container}>
+                {formState.featuredArtists.map((artist, idx) => {
+                  return (
+                    <div className={styles.featured_artist} key={idx}>
+                      {((artist.link) && (artist.link.length > 0)) ?
+                        // TODO: the links might open in the current tab if the protocol is not specified
+                        <a href={artist.link} target='_blank' rel='noreferrer'>{artist.name}</a> :
+                        <p>{artist.name}</p>
+                      }
+
+                      <span>({artist.title})</span>
+
+                      <div
+                        className={styles.icon_container}
+                        onClick={() => {
+                          setFormState((prevState) => {
+                            const newArtists = prevState.featuredArtists.filter((artist, id) => id !== idx);
+                            
+                            return {
+                              ...prevState,
+                              featuredArtists: newArtists,
+                            }
+                          })
+                        }}
+                      >
+                        <MdDeleteForever size={10} />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>)
+            }
+
+            {/* artist input fields */}
+            {(showArtistInput &&
+              <div className={styles.artist_input_container}>
+                <div className={`${styles.form_control} ${styles.form_control_artist}`}>
+                  <label>Artist Name</label>
+                  <input 
+                    type='text' 
+                    value={artistInput.name}
+                    onChange={(e) => setArtistInput((prevState) => {
+                      return {
+                        ...prevState,
+                        name: e.target.value,
+                      }
+                    })}
+                  />
+                </div>
+                <div className={`${styles.form_control} ${styles.form_control_artist}`}>
+                  <label>Artist Title</label>
+                  <input 
+                    type='text' 
+                    value={artistInput.title}
+                    onChange={(e) => setArtistInput((prevState) => {
+                      return {
+                        ...prevState,
+                        title: e.target.value,
+                      }
+                    })}
+                  />
+                </div>
+                <div className={`${styles.form_control} ${styles.form_control_artist}`}>
+                  <label>Artist Profile</label>
+                  <input 
+                    type='text' 
+                    value={artistInput.link}
+                    onChange={(e) => setArtistInput((prevState) => {
+                      return {
+                        ...prevState,
+                        link: e.target.value,
+                      }
+                    })}
+                  />
+                </div>
+
+                <div className={styles.artist_input_actions}>
+                  <button 
+                    onClick={() => {
+                      // clear the input
+                      setArtistInput({
+                        name: '',
+                        title: '',
+                        link: '',
+                      });
+
+                      // close the input container
+                      setShowArtistInput(false);
+                    }}
+                    type='button'
+                  >
+                    Cancel
+                  </button>
+                  <button type='button' onClick={() => addFeaturedArtist()}>Save</button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.form_part}>
+            <div className={styles.section_heading_container}>
+              <h2 className={styles.section_heading}>FEATURED PRODUCTS</h2>
+              <div
+                className={styles.icon_container}
+                onClick={() => setShowProductInputPopup(true)}
+              >
+                <FiEdit2 />
+              </div>
+            </div>
+
+            {/* show the featured product input popup on click */}
+            {(showProductInputPopup) &&
+              <div className={styles.featured_product_input_container}>
+                <div className={styles.featured_product_inner_container}>
+                  <div className={styles.popup_heading}>
+                    <h1>Tag featured products</h1>
+                    <p>Select products to feature them at the event</p>
+                    <div 
+                      className={styles.cancel_icon}
+                      onClick={() => setShowProductInputPopup(false)}
+                    >
+                      <ImCancelCircle size={20} />
+                    </div>
+                  </div>
+
+                  <div className={styles.popup_search_container}>
+                    <p>Search Product</p>
+
+                    <div className={styles.search_input}>
+                      <input
+                        type='text'
+                        value={searchProductQuery}
+                        onChange={(e) => setSearchProductQuery(e.target.value)}
+                        placeholder='Enter product name or model'
+                      />
+                      <div 
+                        onClick={() => searchProducts()}
+                        className={styles.search_icon}
+                      >
+                        {(isLoading) ?
+                          <BeatLoader /> :
+                          <FaSearch size={20} />
+                        }
+                      </div>
+                    </div>
+
+                    {/* display searched products */}
+                    {(searchedProducts.length > 0) &&
+                      <div className={styles.searched_products_container}>
+                        {searchedProducts.map((searchedProduct, idx) => {
+                          return (
+                            <div className={styles.searched_product} key={idx}>
+                              <div>
+                                <p>{searchedProduct.name}</p>
+                                <p>{searchedProduct.model}</p>
+                              </div>
+                              <button onClick={() => addProductToFeaturedProducts(searchedProduct)} type='button'>
+                                <IoMdAdd size={20} />
+                              </button>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    }
+
+                    {/* display currently added products in the popup */}
+                    <div className={styles.product_list_outer_container}>
+                      <h3 className={styles.section_heading}>Current List</h3>
+
+                      <div className={styles.current_product_list}>
+                        {featuredProductDetails.map((product, idx) => {
+                          return (
+                            <div className={styles.current_product} key={idx}>
+                              <img src={product.images[0]} />                            
+                              <p>{product.name}</p>
+                              <p>{product.model}</p>
+
+                              <div 
+                                onClick={() => removeProductFromFeaturedProducts(product)} 
+                                className={styles.delete_icon}
+                              >
+                                <RiDeleteBin6Line size={20} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <div className={styles.featured_products_container}>
+              {/* display featured products here */}
+              {featuredProductDetails.map((featuredProduct, idx) => {
+                return (
+                  <div key={idx}>
+                    <p>{featuredProduct.model}</p>
+                    <p>{featuredProduct.name}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </form>
     </main>
   );
 }
 
-export default EditEventPage;
+export default AddEvent

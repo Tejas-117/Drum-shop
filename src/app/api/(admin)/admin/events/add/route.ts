@@ -19,6 +19,8 @@ export async function POST(req: NextRequest) {
     const media = formData.getAll('media') as File[];
     const eventData: (EventType | null) = JSON.parse(formData.get('eventData') as string);
 
+    console.log(eventData);
+
     // if any of the data is missing return error
     if (!eventData || !poster) {
       return NextResponse.json(
@@ -84,8 +86,6 @@ export async function POST(req: NextRequest) {
         const bytes = await image.arrayBuffer();
         const imgBuffer = Buffer.from(bytes);
         await writeFile(imagePath, imgBuffer);
-
-        console.log('Uploaded media: ', mediaPaths);
       };
 
       newEvent.media = mediaPaths;

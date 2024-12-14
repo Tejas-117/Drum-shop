@@ -102,7 +102,8 @@ export async function POST(
   
         // get file extension
         const extension = image.name.split('.').pop();
-  
+        
+        // TODO: here image will be overwritten since it's not unique
         const imagePath = `${UPLOAD_DIR}/${eventId}_${i}.${extension}`;
   
          // track all the image urls to store in db
@@ -144,8 +145,6 @@ export async function POST(
       {returnOriginal: false}
     );
 
-    console.log(updatedEvent);
-
     // revalidate cache
     revalidatePath('/events');
     revalidatePath(`/events/${eventId}`);
@@ -155,7 +154,6 @@ export async function POST(
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

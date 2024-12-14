@@ -49,7 +49,7 @@ const eventSchema = new mongoose.Schema({
       minLength: [1, 'Artist name can\'t be empty']
     },
     title: String,
-    image: String,
+    link: String,
   }],
   featuredProducts: [{
     type: mongoose.Types.ObjectId,
@@ -61,6 +61,13 @@ const eventSchema = new mongoose.Schema({
     minLength: [1, 'Event poster can\'t be empty'],
   },
   media: [String],
+
+  socialLinks: {
+    instagram: String,
+    facebook: String,
+    youtube: String,
+    x: String,
+  },
 
   status: {
     type: String,

@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa6';
 import { BsTwitterX } from 'react-icons/bs';
 import { FiEdit2 } from 'react-icons/fi';
@@ -18,6 +18,7 @@ import { ImCancelCircle } from 'react-icons/im';
 import { FaSearch } from 'react-icons/fa';
 import { ProductType } from '@/types/product';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import { useRouter } from 'next/navigation';
 
 // TODO: add buttons and functionality to remove added artists and the products
 
@@ -39,6 +40,7 @@ type FormStateType = {
 }
 
 function AddEvent() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const initialFormState: FormStateType = {
@@ -386,7 +388,12 @@ function AddEvent() {
         <h1>EVENT INFO</h1>
 
         <div className={styles.event_actions}>
-          <button className={styles.cancel_action}>Cancel</button>
+          <button 
+            className={styles.cancel_action}
+            onClick={() => router.push('/events')}
+          >
+              Cancel
+          </button>
           <button 
             className={styles.save_action} 
             onClick={(e) => handleSubmit()}
