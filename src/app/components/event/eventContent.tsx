@@ -14,7 +14,7 @@ import EventActions from './eventActions/eventActions';
 type EventContentProps = {
   event: EventWithFeaturedProducts,
   user: (UserType | null),
-}
+};
 
 function EventContent({ event, user }: EventContentProps) {
   const months = [
@@ -76,7 +76,7 @@ function EventContent({ event, user }: EventContentProps) {
             <span className={styles.title_label}>
               <FaLocationDot /> Location
             </span>
-            <span className={styles.title_value}>CMR Road, Kalyan Nagar</span>
+            <span className={styles.title_value}>{event.location || '-'}</span>
           </div>
         </div>
 
@@ -84,15 +84,16 @@ function EventContent({ event, user }: EventContentProps) {
 
         <div className={styles.right_container}>
           <p>Learn more about the event through our social links</p>
-          {/* TODO: update the social links */}
+          
+          {/* TODO: update the fallback social links */}
           <div className={styles.socials_container}>
-            <Link href={'https://x.com'} target='blank'><BsTwitterX /></Link>
-            <Link href={'https://instagram.com'} target='blank'><BsInstagram /></Link>
-            <Link href={'https://facebook.com'} target='blank'><AiFillFacebook /></Link>
-            <Link href={'https://youtube.com'} target='blank'><AiFillYoutube /></Link>
+            <Link href={event.socialLinks?.x || ''} target='blank'><BsTwitterX /></Link>
+            <Link href={event.socialLinks?.instagram || ''} target='blank'><BsInstagram /></Link>
+            <Link href={event.socialLinks?.facebook || ''} target='blank'><AiFillFacebook /></Link>
+            <Link href={event.socialLinks?.youtube || ''} target='blank'><AiFillYoutube /></Link>
           </div>
 
-          <EventActions />
+          <EventActions socialLinks={event.socialLinks} />
         </div>
       </div>
 
@@ -127,7 +128,10 @@ function EventContent({ event, user }: EventContentProps) {
             {(event.featuredArtists.map((artist, idx) => {
               return (
                 <div key={idx} className={styles.artist}>
-                  <p>{artist.name}</p>
+                  <p>
+                    {artist.name}
+                    {artist.title && <span>({artist.title})</span>}
+                  </p>
                   {artist.link &&
                     <Link href={artist.link} target='blank'>
                       <IoMdLink className={styles.artist_link_icon} />
@@ -139,6 +143,21 @@ function EventContent({ event, user }: EventContentProps) {
           </div>
         </div>
       </section>
+
+      {/* section containing highlights media */}
+      {event.status === 'highlights' &&
+        <section className={styles.highlights_container}>
+          <h2>EVENT HIGHLIGHTS</h2>
+
+          <div className={styles.highlights_inner_container}>
+            {event.media.map((url, idx) => {
+              return (
+                <img src={url} key={idx} />
+              )
+            })}
+          </div>
+        </section>
+      }
     </div>
   )
 }

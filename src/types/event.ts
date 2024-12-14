@@ -11,10 +11,18 @@ interface EventType {
   name: string,
   date: string,
   time: string,
+  location: string,
   status: string,
   details: string,
   featuredArtists: ArtistType[],
   featuredProducts: string[],
+
+  socialLinks: {
+    instagram: string,
+    facebook: string,
+    youtube: string,
+    x: string,
+  },
 
   poster: string,
   media: string[]
