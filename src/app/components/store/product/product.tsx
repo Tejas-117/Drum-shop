@@ -60,6 +60,34 @@ const  Product = forwardRef<HTMLAnchorElement, ProductProps>(({ product, user },
     else return product.groups[0].price;
   }
 
+  // function to generate a note based on special cases of the product
+  function getProductNote() {
+    /**
+     * based on quantity
+     *  - out of stock, less than 20 left,
+     * 
+     * based on price
+     *  - special offer
+     */
+    
+    let note = '';
+    let color = '';
+    const productQuantity = product.quantity;
+
+    if ((productQuantity) && (productQuantity === 0)) {
+      note = 'OUT OF STOCK';
+      color = '#D94C4C';
+    } else if ((productQuantity) && (productQuantity <= 30)) {
+      note = `ONLY ${productQuantity} LEFT!`;
+      color = '#F4AB36';
+    } else if ((product.discount) >= (0.1 * product.sellingPrice)) {
+      note = 'SPECIAL OFFER';
+      color = '#019FB4';
+    }
+
+    return { note, color };
+  }
+
   return (
     <Link 
       href={`/products/${product._id}`} 
@@ -67,6 +95,15 @@ const  Product = forwardRef<HTMLAnchorElement, ProductProps>(({ product, user },
       className={styles.product_container}
       ref={ref}
     >
+      {(getProductNote().note.length > 0) &&
+        <div 
+          className={styles.product_note}
+          style={{backgroundColor: getProductNote().color}}
+        >
+          {getProductNote().note}
+        </div>
+      }
+
       <div className={styles.product_image_container}>
         <img 
           src={product.images[0]}
@@ -97,6 +134,8 @@ const  Product = forwardRef<HTMLAnchorElement, ProductProps>(({ product, user },
           <LiaCartPlusSolid /> 
         }
       </button>
+
+
     </Link>
   );
 });
