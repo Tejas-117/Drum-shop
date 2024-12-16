@@ -1,3 +1,18 @@
+/**
+ * The instances where this route is used to return data are
+ * 
+ * (1). Data to be displayed on the store page.
+ *      ex: /api/products?store=true
+ * 
+ * (2). Data based on a category.
+ *      ex: /api/products?category=drums
+ *      
+ * (3). Data based on the given filters (used for product search)
+ *      ex: /api/products?filter=true&query=star
+ *      ex: /api/products?filter=true&brand=tama
+ * 
+ */
+
 import dbConnect from '@/lib/dbConnect';
 import Product from '@/models/product';
 import { ProductType } from '@/types/product';
@@ -16,7 +31,8 @@ export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   
   try {
-    // get the query params for enabling pagination
+    // get the query params for enabling pagination and deciding the type
+    // of data to return
     const category = searchParams.get('category');
     const pageNumber = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '5');
@@ -49,7 +65,8 @@ export async function GET(req: NextRequest) {
       ]);
 
       data = { categoryData };
-    } else {
+    } 
+    else {
       // check if the category is present, else return error
       if (!category) {
         return NextResponse.json(
@@ -60,7 +77,7 @@ export async function GET(req: NextRequest) {
 
       const docsToSkip = (pageNumber * limit);
 
-      // TODO: this type of pagination could be optimised
+      // TODO: pagination could be optimised
       const products: ProductType[] = await Product.find({ category }).sort({createdAt: -1}).skip(docsToSkip).limit(limit);
       data = { products }
     }

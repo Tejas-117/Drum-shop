@@ -1,11 +1,11 @@
 import Image from 'next/image';
 import styles from './header.module.css';
-import { LuSearch } from 'react-icons/lu';
 import { FaCircleUser } from 'react-icons/fa6';
 import { BiSolidDownArrow } from 'react-icons/bi';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdOutlineShoppingBasket } from 'react-icons/md';
 import Link from 'next/link';
+import SearchProducts from '../searchProducts/searchProducts';
 
 type CartPropType = {
   cartId: string,
@@ -32,16 +32,8 @@ function Header({ cart }: { cart: (CartPropType | null) }) {
         </div>
       </Link>
 
-      {/* search container in the header */}
-      <div className={styles.search_container}>
-        <input
-          type='text'
-          placeholder='Search products'
-        />
-
-        {/* search icon */}
-        <LuSearch />
-      </div>
+      {/* input container to search products */}
+      <SearchProducts />
 
       {/* navbar with links */}
       <div className={styles.nav_links}>

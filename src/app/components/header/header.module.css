@@ -15,22 +15,6 @@
   object-fit: contain;
 }
 
-.search_container {
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--white);
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 4px;
-  width: 400px;
-  height: 40px;
-}
-
-.search_container input {
-  border: none;
-  outline: none;
-}
-
 .nav_links {
   color: var(--white);
 }

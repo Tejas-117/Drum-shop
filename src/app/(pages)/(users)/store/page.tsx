@@ -7,15 +7,20 @@ import { BsArrowRight } from 'react-icons/bs';
 import ProductCategoryList from '@/app/components/store/categoryList/categoryList';
 import { ProductType } from '@/types/product';
 import { getUser } from '@/helpers/auth/getUser';
+import ProductList from '@/app/components/productList/productList';
 
 type CategoryDataType = {
   _id: string,
   products: ProductType[],
 }
 
-type ResponseType = {
+type StoreResponseType = {
   categoryData: CategoryDataType[] 
 } 
+
+type FilterProductsResponseType = {
+  products: ProductType[],
+}
 
 async function fetchStoreData() {
   try {
@@ -29,11 +34,47 @@ async function fetchStoreData() {
   }
 }
 
-async function Store() {
-  const res = await fetchStoreData();
-  const data: ResponseType = res.data;
+async function fetchFilteredProducts(query?: string, brand?: string) {
+  let urlParams = '';
+
+  try {
+    if (query) urlParams += `&query=${query}`;
+    else if (brand) urlParams += `&brand=${brand}`;
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/search?${urlParams}`, 
+      { cache: 'no-store' } // cache for a day, unless revalidated
+    );
+
+    return await res.json();
+  } catch(error) {
+    return { data: {products: [] }};
+  }
+}
+
+async function Store({ 
+  searchParams 
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  let storeData: StoreResponseType | null = null;
+  let filteredProductsData: FilterProductsResponseType | null = null;
 
   const user = await getUser();
+
+  const params = (await searchParams);
+  const query = params.query;
+  const brand = params.brand;
+
+  // if there are filters provided, fetch data based on that
+  if (query || brand) {
+    const res = await fetchFilteredProducts(query, brand);
+    filteredProductsData = res;
+  } else {
+    // else generic store data
+    const res = await fetchStoreData();
+    storeData = res.data;
+  }
 
   return (
     <main className={styles.main}>
@@ -130,19 +171,34 @@ async function Store() {
       </section>
 
       {/* shop by category */}
-      <section className={styles.shop_by_category_container}>
-        <h1>SHOP BY CATEGORY</h1>
-        
-        {data.categoryData.map((ctData, idx: number) => {
-          return (
-            <ProductCategoryList 
-              categoryList={ctData}
-              key={idx}
-              user={user}
-            />
-          );
-        })}
-      </section>
+      {storeData &&
+        <section className={styles.shop_by_category_container}>
+          <h1>SHOP BY CATEGORY</h1>
+          
+          {storeData.categoryData.map((ctData, idx: number) => {
+            return (
+              <ProductCategoryList 
+                categoryList={ctData}
+                key={idx}
+                user={user}
+              />
+            );
+          })}
+        </section>
+      }
+
+      {/* display searched products */}
+      {filteredProductsData &&
+        <section className={styles.filtered_products_container}>
+          <h2>Items related to '{query}'</h2>
+
+          {/* {filteredProductsData.products.map} */}
+          <ProductList 
+            products={filteredProductsData.products}
+            user={user}
+          />
+        </section>
+      }
 
       <NeedHelp />
     </main>
