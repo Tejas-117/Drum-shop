@@ -3,8 +3,11 @@ import styles from './sidebar.module.css';
 import { BiPurchaseTagAlt } from 'react-icons/bi';
 import { RiAccountPinBoxLine } from 'react-icons/ri';
 import { FaCircleUser } from 'react-icons/fa6';
-import { MouseEvent } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { BarLoader, ClipLoader } from 'react-spinners';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 type UserType = {
   fullName: string,
@@ -14,6 +17,7 @@ type UserType = {
 
 function Sidebar({ user, type }: { user: UserType | null, type: string }) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   // function to change active menu entry
   function updateActiveEntry(e: MouseEvent) {
@@ -39,12 +43,36 @@ function Sidebar({ user, type }: { user: UserType | null, type: string }) {
     currSubEntry.classList.add(`${styles.submenu_entry_active}`);
   }  
 
+  // function to log user out
+  async function logoutUser() {
+    setIsLoading(true);
+
+    try {
+      await axios.get('/api/auth/logout');
+      toast.success('Successfully logged out');
+      router.push('/login'); // redirect to login page after logout
+    } catch (error: any) {
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage); 
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <div className={styles.profile_sidebar}>
       <div className={styles.full_name}>
         <FaCircleUser size={60} className={styles.user_icon}/>
         <p>{user?.fullName}</p>
       </div>
+
+      {/* display loader to indicate state */}
+      {(isLoading) &&
+        <div className={styles.loader_container}>
+          <BarLoader color='#ffffff' className={styles.loader_icon} />
+        </div>
+      }
 
       <div className={styles.menu_container}>
         <div 
@@ -81,7 +109,7 @@ function Sidebar({ user, type }: { user: UserType | null, type: string }) {
             </ul>
           </div>
         </div>
-        
+
         <div 
           className={styles.menu_entry_container}
           onClick={(e) => updateActiveEntry(e)}
@@ -103,6 +131,7 @@ function Sidebar({ user, type }: { user: UserType | null, type: string }) {
         <div className={styles.menu_entry_container}>
           <div 
             className={styles.menu_entry}
+            onClick={() => logoutUser()}
           >
             <IoMdLogOut className={styles.entry_icon} size={25} />
             Logout
