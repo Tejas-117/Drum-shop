@@ -54,10 +54,10 @@ function Header({ cart }: { cart: (CartPropType | null) }) {
       </div>
 
       {/* user icon */}
-      <div className={styles.user}>
+      <Link href={'/profile'} className={styles.user}>
         <FaCircleUser className={styles.user_icon}/>
         <BiSolidDownArrow className={styles.user_icon_arrow} />
-      </div>
+      </Link>
     </nav>
   )
 }
