@@ -95,6 +95,19 @@ function Sidebar() {
           </ul>
         </div>
       </div>
+
+      
+      <div 
+        className={`${styles.sidebar_entry} ${styles.cursor_pointer}`}
+        onClick={(e) => toggleSubMenu(e)}
+      >
+        <p>
+          <Link href={'/admin/users'}>
+            <AiOutlineProduct />
+            Admin Users
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
