@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/communication-email": "^1.0.0",
     "@upstash/redis": "^1.32.0",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",

@@ -6,6 +6,8 @@
 import generateOTP from '@/helpers/generateOTP';
 import { NextRequest, NextResponse } from 'next/server';
 import redisClient from '@/lib/redisClient';
+import { sendSignUpOtpTemplate } from '@/helpers/email/sendOtp.template';
+import { sendEmail } from '@/helpers/email/sendMail';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,6 +25,19 @@ export async function POST(req: NextRequest) {
 
     // generate an otp
     const otp = generateOTP();
+    const {html, plainText} = sendSignUpOtpTemplate(otp);
+
+    // send an email
+    const emailRes = await sendEmail({
+      subject: 'OTP for user signup', 
+      recipientAddress: email,
+      html, 
+      plainText, 
+    });
+
+    if (emailRes.success === false) {
+      throw 'Email not sent';
+    }
   
     // set this otp in redis database for a min
     await redisClient.set(email, otp, {ex: 180});

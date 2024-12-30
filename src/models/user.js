@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
-    unique: true,
     trim: true,
   },
   phone: {
@@ -33,8 +32,6 @@ const userSchema = new mongoose.Schema({
     enum: ['customer', 'staff', 'admin', 'chief'],
     default: 'customer',
   },
-  forgotPasswordToken: String,
-  forgotPasswordTokenExpiry: Date,
 });
 
 userSchema.index({ email: 1 });
