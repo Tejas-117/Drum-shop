@@ -7,6 +7,18 @@ const addressSchema = new mongoose.Schema({
     ref: User.modelName,
     required: [true, 'User id is required to save address'],
   },
+  name: {
+    type: String,
+    required: [true, 'Name can\'t be empty'],
+    minLength: [1, 'Name can\'t be empty'],
+    maxLength: [50, 'Name can\'t exceed 50 characters'],
+  },
+  phone: {
+    type: String,
+    required: [true, 'Phone number can\'t be empty'],
+    minLength: [1, 'Phone number can\'t be empty'],
+    maxLength: [10, 'Phone number can\'t exceed 10 characters'],
+  },
   address: {
     type: String,
     required: [true, 'Address can\'t be empty'],
@@ -19,22 +31,19 @@ const addressSchema = new mongoose.Schema({
     minLength: [1, 'City can\'t be empty'],
     maxLength: [50, 'City can\'t exceed 50 characters'],
   },
-  zipCode: {
+  pinCode: {
     type: String,
-    required: [true, 'Zip code can\'t be empty'],
-    minLength: [1, 'Zip code can\'t be empty'],
-    maxLength: [6, 'Zip code can\'t exceed 6 characters'],
+    required: [true, 'Pin code can\'t be empty'],
+    minLength: [1, 'Pin code can\'t be empty'],
+    maxLength: [6, 'Pin code can\'t exceed 6 characters'],
   },
   state: {
     type: String,
     required: [true, 'State can\'t be empty'],
     minLength: [1, 'State can\'t be empty'],
   },
-  country: {
-    type: String,
-    required: [true, 'Country can\'t be empty'],
-    minLength: [1, 'Country can\'t be empty'],
-  },
+  landmark: String,
+  addressType: String,
 });
 
 const ShippingAddress = mongoose.models.address || mongoose.model('address', addressSchema);

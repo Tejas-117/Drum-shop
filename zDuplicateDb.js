@@ -2,6 +2,8 @@ const { MongoClient } = require('mongodb');
 const uri = 'mongodb://127.0.0.1:27017';
 const client = new MongoClient(uri);
 
+// a util file to seed database with dummy data
+
 async function duplicateDocuments() {
   try {
     await client.connect();

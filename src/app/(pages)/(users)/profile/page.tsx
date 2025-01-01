@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 import Sidebar from '@/app/components/profile/sidebar/sidebar';
 import { useRouter, useSearchParams } from 'next/navigation';
 import UserInfo from '@/app/components/profile/userInfo/userInfo';
-import Address from '@/app/components/profile/address/address';
+import ManageAddress from '@/app/components/profile/address/manage/manageAddress';
 
 type UserType = {
   fullName: string,
@@ -71,7 +71,7 @@ function CustomerProfile() {
 
       {/* section to manage user address */}
       {(type === 'address') &&
-        <Address />
+        <ManageAddress user={user} />
       }
     </main>
   )

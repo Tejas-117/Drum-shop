@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // send an email
     const emailRes = await sendEmail({
       subject: 'OTP for user signup', 
-      recipientAddress: email,
+      recipientAddress: 'tejasftw117@gmail.com', // TODO: change email address
       html, 
       plainText, 
     });
@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
       { status: 200 },
     );
   } catch (error: any) {
+    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' }, 
       { status: 500 }

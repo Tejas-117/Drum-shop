@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin } from './middleware/admin';
-import { notFound } from 'next/navigation';
 
 const publicPaths = ['/login', '/signup'];
-const privatePaths = [];
+const privatePaths = ['/profile', '/cart'];
 const adminPaths = ['/admin', '/api/admin'];
 
 export async function middleware(request: NextRequest) {
@@ -35,6 +34,21 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // if the user is in private path
+  const isPrivatePath = privatePaths.some((privatePath) => path.includes(privatePath));
+  
+  if (isPrivatePath) {
+    // if the request has token with it
+    if (token) {
+      return NextResponse.next();
+    } else {
+      // if the token is not present, redirect user to 'login' page
+      const url = new URL('/login', request.url);
+      url.searchParams.set('message', 'Login to access the page');
+      return NextResponse.redirect(url);
+    }
+  }
+
   return NextResponse.next();
 }
 
@@ -42,6 +56,8 @@ export const config = {
   matcher: [
     '/signup',
     '/login',
+    '/profile',
+    '/cart',
     '/admin/:path*',
     '/api/admin/:path*'
   ],
