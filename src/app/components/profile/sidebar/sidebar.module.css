@@ -2,7 +2,7 @@
 /* sidebar styles */
 .profile_sidebar {
   width: 300px;
-  height: 100vh;
+  min-height: 100vh;
   background-color: var(--charcoal);
   color: white;
   overflow: hidden;

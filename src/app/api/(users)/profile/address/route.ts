@@ -5,6 +5,40 @@ import ShippingAddress from '@/models/shippingAddress';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET(req: NextRequest) {
+  try {
+    // retrieve the token stored in the cookies
+    const cookieStore = cookies();
+    const token = cookieStore.get('token')?.value;
+
+    // if the token is not present, user is not authenticated
+    if (!token) {
+      return NextResponse.json(
+        { message: 'Unauthenticated' },
+        { status: 401 }
+      )
+    }
+    
+    // verify the user and retrieve userId
+    const decodedToken = await verifyToken(token)
+    const userId = decodedToken.userId;
+    
+    // from the userId fetch all the address related to the user
+    await dbConnect();
+    const allAddress = await ShippingAddress.find({userId});
+
+    return NextResponse.json(
+      { allAddress },
+      { status: 200 },
+    )
+  } catch (error: any) {
+    return NextResponse.json(
+      { message: 'Internal server error' }, 
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     // retrieve the token stored in the cookies

@@ -1,15 +1,13 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import styles from './addAddress.module.css';
+import { Dispatch, SetStateAction, useState } from 'react';
+import styles from './editAddress.module.css';
 import { ImCancelCircle } from 'react-icons/im';
 import toast from 'react-hot-toast';
 import ShippingAddressSchema from '@/validation/shippingAddress';
 import axios from 'axios';
-import { AddressInput } from '@/types/address';
-import { BeatLoader, ClipLoader } from 'react-spinners';
-
-type FormStateType = AddressInput;
+import { Address } from '@/types/address';
+import { BeatLoader } from 'react-spinners';
 
 type UserType = {
   fullName: string,
@@ -18,31 +16,25 @@ type UserType = {
 }
 
 type PropsType = {
-  setShowAddressForm: Dispatch<SetStateAction<boolean>>,
+  setShowEditForm: Dispatch<SetStateAction<boolean>>,
   user: UserType,
+  address: Address | null,
+  allAddress: Address[],
+  setAllAddress: Dispatch<SetStateAction<Address[]>>
 }
 
-function AddAddress({ setShowAddressForm, user }: PropsType) {
-  const initialFormState = {
-    name: user?.fullName || '',
-    phone: user?.phone || '',
-    pinCode: '',
-    address: '',
-    city: '',
-    state: '',
-    landmark: '',
-    addressType: 'home'
-  };
-
-  const [formState, setFormState] = useState(initialFormState);
+function EditAddress({ setShowEditForm, user, address, allAddress, setAllAddress }: PropsType) {
+  const [formState, setFormState] = useState(address);
   const [isLoading, setIsLoading] = useState(false);
 
   // function to update form state with form field values
   function updateFormState(name: string, value: string) {
+    if (!formState) return;
+
     resetInputElement(name);
 
-    const newFormState = { ...formState };
-    const keyname = name as keyof FormStateType;
+    const newFormState = {...formState};
+    const keyname = name as keyof Address;
     newFormState[keyname] = value;
 
     setFormState(newFormState);
@@ -113,8 +105,9 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
     }
   }
 
-  // function to save an address
-  async function saveAddress() {
+  // function to edit a address
+  async function editAddress() {
+    if (!formState) return;
     setIsLoading(true);
 
     // validate the input data
@@ -130,13 +123,20 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
       });
     } else {
       try {
-        await axios.post('/api/profile/address', { ...formState });
+        await axios.put(`/api/profile/address/${formState._id}`, { ...formState });
   
-        toast.success('Successfully saved address');
-        setFormState(initialFormState);
-        setShowAddressForm(false);
+        toast.success('Successfully edited address');
+        setShowEditForm(false);
 
-        location.reload();
+        // update all address state
+        setAllAddress((prevState) => {
+          const addressIdx = prevState.findIndex((a) => a._id === formState._id);
+          if (addressIdx == -1) return prevState;
+
+          const newAddress = [...prevState];
+          newAddress[addressIdx] = formState;
+          return newAddress;
+        });
       } catch (error: any) {
         const errorData = error.response.data;
         const errorMessage = errorData.message;
@@ -147,26 +147,14 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
     }
   }
 
-  useEffect(() => {
-    if (!user) return;
-
-    setFormState((prevState) => {
-      return {
-        ...prevState,
-        name: user.fullName,
-        phone: user.phone,
-      }
-    })
-  }, [user]);
-
   return (
     <section className={styles.address_form_outer_container}>
       <div className={styles.address_form_container}>
         <div className={styles.popup_heading}>
-          <h1>ADD ADDRESS</h1>
+          <h1>EDIT ADDRESS</h1>
           <div
             className={styles.cancel_icon}
-            onClick={() => setShowAddressForm(false)}
+            onClick={() => setShowEditForm(false)}
           >
             <ImCancelCircle size={20} />
           </div>
@@ -179,7 +167,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='name'
-                value={formState.name}
+                value={formState?.name || ''}
                 onChange={(e) => updateFormState('name', e.target.value)}
                 onBlur={(e) => validateField('name', e.target.value)}
               />
@@ -191,7 +179,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='pinCode'
-                value={formState.pinCode}
+                value={formState?.pinCode || ''}
                 onChange={(e) => updateFormState('pinCode', e.target.value)}
                 onBlur={(e) => validateField('pinCode', e.target.value)}
               />
@@ -202,7 +190,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <label htmlFor="address">ADDRESS (AREA & STREET)</label>
               <textarea
                 name='address'
-                value={formState.address}
+                value={formState?.address || ''}
                 onChange={(e) => updateFormState('address', e.target.value)}
                 onBlur={(e) => validateField('address', e.target.value)}
               />
@@ -214,7 +202,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='landmark'
-                value={formState.landmark}
+                value={formState?.landmark || ''}
                 onChange={(e) => updateFormState('landmark', e.target.value)}
               />
               <span data-name='landmark' className={styles.error_msg}></span>
@@ -227,7 +215,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='phone'
-                value={formState.phone}
+                value={formState?.phone || ''}
                 onChange={(e) => updateFormState('phone', e.target.value)}
                 onBlur={(e) => validateField('phone', e.target.value)}
               />
@@ -239,7 +227,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='city'
-                value={formState.city}
+                value={formState?.city || ''}
                 onChange={(e) => updateFormState('city', e.target.value)}
                 onBlur={(e) => validateField('city', e.target.value)}
               />
@@ -251,7 +239,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
               <input
                 type="text"
                 name='state'
-                value={formState.state}
+                value={formState?.state || ''}
                 onChange={(e) => updateFormState('state', e.target.value)}
                 onBlur={(e) => validateField('state', e.target.value)}
               />
@@ -267,7 +255,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
                     type="radio"
                     name='addressType'
                     value={'home'}
-                    checked={formState.addressType === 'home'}
+                    checked={formState?.addressType === 'home'}
                     onChange={(e) => updateFormState('addressType', e.target.value)}
                   />
                   <span> Home</span>
@@ -278,7 +266,7 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
                     type="radio"
                     name='addressType'
                     value={'work'}
-                    checked={formState.addressType === 'work'}
+                    checked={formState?.addressType === 'work'}
                     onChange={(e) => updateFormState('addressType', e.target.value)}
                   />
                   <span> Work</span>
@@ -290,13 +278,12 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
 
         <div className={styles.add_address_actions}>
           {(isLoading) ?
-            <BeatLoader size={20} />:
+            <BeatLoader size={25} />:
             <>
-              <button onClick={() => saveAddress()}>Save</button>
+              <button onClick={() => editAddress()}>Edit</button>
               <button
                 onClick={() => {
-                  setFormState(initialFormState);
-                  setShowAddressForm(false);
+                  setShowEditForm(false);
                 }}
               >
                 Cancel
@@ -309,4 +296,4 @@ function AddAddress({ setShowAddressForm, user }: PropsType) {
   )
 }
 
-export default AddAddress
+export default EditAddress
