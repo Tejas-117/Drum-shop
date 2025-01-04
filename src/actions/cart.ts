@@ -1,5 +1,6 @@
 'use server';
 
+import mongoose from 'mongoose';
 import Cart from '@/models/cart';
 import dbConnect from '@/lib/dbConnect';
 import { cookies } from 'next/headers';
@@ -241,11 +242,82 @@ async function updateQuantity(
     }
   }
 }
+async function changeNewQuantity(
+  productId: string,
+  cartProductId: string,
+  newQuantity: number
+) {
+  try {
+    const user = await getUserFromCookies();
+
+    // get the active cart of the user.
+    const cart: (CartType | null) = await Cart.findOne(
+      { userId: user.userId, status: 'active', 'products._id': cartProductId },
+      { 'products.$': 1 }
+    );
+
+    if (!cart) {
+      throw Error('Couldn\'t find product in cart');
+    }
+
+    const cartProduct = cart.products[0];
+    const currQuantity = cartProduct.quantity;
+    const groupId = cartProduct.groupId;
+
+    // get the available quantity of the product
+    const product: (ProductType | null) = await Product.findById(productId);
+
+    if (!product) {
+      // product was removed from the store
+      throw Error('Product not available on store');
+    }
+
+    let availQuantity = 0;
+
+    if (product.groups.length === 0) {
+      availQuantity = product.quantity || 0;
+    } else {
+      const matchingGroup = product.groups.find((grp) => (grp._id.toString() === groupId?.toString()));
+
+      availQuantity = matchingGroup?.quantity || 0;
+    }
+
+    // check if the change can be accomodated within the available quantity
+    if (newQuantity > availQuantity) {
+      return {
+        error: true,
+        message: 'Quantity exceeds available stock',
+      }
+    } else if (newQuantity <= 0) {
+      return {
+        error: true,
+        message: 'Quantity of product in the cart can\'t be zero/negative',
+      }
+    }
+
+    // update the quantity in the database, based on availablity
+    await Cart.updateOne(
+      { userId: user.userId, status: 'active', 'products._id': cartProductId },
+      { $set: { 'products.$.quantity': newQuantity } }
+    );
+
+    return {
+      success: true,
+      message: 'Updated the quantity'
+    }
+  } catch (error: any) {
+    return {
+      error: true,
+      message: error.message,
+    }
+  }
+}
 
 export {
   addProduct,
   removeProduct,
   updateQuantity,
+  changeNewQuantity,
   type CartProductType,
   type CartType,
 };

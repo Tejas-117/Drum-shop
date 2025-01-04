@@ -72,6 +72,23 @@ export const reducer = (
       return { products: updatedProducts };
     }
 
+    case 'update_quantity': {
+      const { cartProductId, newQuantity } = payload;
+
+      // update the product based on their productId
+      const updatedProducts = state.products.map((product) => {
+        // if their product ids match
+        if ((product._id) === (cartProductId)) { 
+          // check if the groups ids match too
+          return { ...product, quantity: newQuantity};
+        } else {
+          return product;
+        }
+      });
+
+      return { products: updatedProducts };
+    }
+
     default:
       return state;
   }
