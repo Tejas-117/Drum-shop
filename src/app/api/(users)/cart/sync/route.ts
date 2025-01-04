@@ -68,8 +68,10 @@ export async function GET(req: NextRequest) {
         if ((group) && (cartProduct.quantity > group.quantity)) {
           let variant: string = '';
           if (group.color) variant += group.color;
-          if (group.size) variant += ', ' + group.size;
-          if (group.material) variant += ', ' + group.material;
+          if (variant.length > 0) variant += ', ';
+          if (group.size) variant += group.size;
+          if (variant.length > 0) variant += ', ';
+          if (group.material) variant += group.material;
 
           err.availableQuantity = group?.quantity || 0;
           err.variant = variant;

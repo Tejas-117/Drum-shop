@@ -19,7 +19,7 @@ type UserType = {
 
 type PropsType = {
   setShowAddressForm: Dispatch<SetStateAction<boolean>>,
-  user: UserType,
+  user: UserType | null,
 }
 
 function AddAddress({ setShowAddressForm, user }: PropsType) {

@@ -17,7 +17,7 @@ type UserType = {
 
 type PropsType = {
   setShowEditForm: Dispatch<SetStateAction<boolean>>,
-  user: UserType,
+  user: UserType | null,
   address: Address | null,
   allAddress: Address[],
   setAllAddress: Dispatch<SetStateAction<Address[]>>

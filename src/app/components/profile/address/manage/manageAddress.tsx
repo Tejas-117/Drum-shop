@@ -17,7 +17,7 @@ type UserType = {
   phone: string,
 }
 
-function ManageAddress({ user } : { user: UserType }) {
+function ManageAddress({ user } : { user: UserType | null }) {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
 
