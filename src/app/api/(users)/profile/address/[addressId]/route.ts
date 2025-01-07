@@ -70,7 +70,7 @@ export async function PUT(
         );
       } else if (error.code === 'ERR_JWT_EXPIRED') {
         return NextResponse.json(
-          { message: 'Unauthenticated' },
+          { message: 'Login to perform action.' },
           { status: 401 }
         );
       }
@@ -124,7 +124,7 @@ export async function DELETE(
         );
       } else if (error.code === 'ERR_JWT_EXPIRED') {
         return NextResponse.json(
-          { message: 'Unauthenticated' },
+          { message: 'Login to perform action.' },
           { status: 401 }
         );
       }

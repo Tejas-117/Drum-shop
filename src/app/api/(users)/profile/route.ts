@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
         );
       } else if (error.code === 'ERR_JWT_EXPIRED') {
         return NextResponse.json(
-          { message: 'Unauthenticated' },
+          { message: 'Login to access page.' },
           { status: 401 }
         );
       }

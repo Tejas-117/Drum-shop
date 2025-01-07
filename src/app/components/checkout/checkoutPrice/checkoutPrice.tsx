@@ -6,16 +6,13 @@ import { useRouter } from 'next/navigation';
 import { BeatLoader } from 'react-spinners';
 import { CartType } from '@/types/cart';
 
-type QuantityErrorType = { 
-  cartProductId: string,
-  productId: string,
-  variant?: string,
-  name: string, 
-  cartQuantity: number, 
-  availableQuantity: number
+type PropsType = { 
+  cart: CartType | null,
+  proceedToPayment: () => Promise<void>,
+  isLoading: boolean
 };
 
-function CheckoutPrice({ cart }: { cart: CartType | null }) {
+function CheckoutPrice({ cart, proceedToPayment, isLoading }: PropsType) {
   const router = useRouter();
 
   // different sub-total price of the cart
@@ -25,14 +22,6 @@ function CheckoutPrice({ cart }: { cart: CartType | null }) {
 
   // cart total
   const [total, setTotal] = useState(0);
-
-  // state to depict loading state of the component
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUpdatingQuantity, setIsUpdatingQuantity] = useState(false);
-
-  // state to display the errors thrown by syncing cart with server
-  const [displayError, setDisplayError] = useState(false);
-  const [syncErrors, setSyncErrors] = useState<QuantityErrorType[]>([]);
 
   useEffect(() => {
     // function to calculate total price of the cart
@@ -103,7 +92,7 @@ function CheckoutPrice({ cart }: { cart: CartType | null }) {
 
       <button 
         className={styles.checkout_btn}
-        onClick={() => console.log('Clicked...')}
+        onClick={() => proceedToPayment()}
       >
         {(isLoading) ?
           <BeatLoader /> :

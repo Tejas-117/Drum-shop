@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAdmin } from './middleware/admin';
 
 const publicPaths = ['/login', '/signup'];
-const privatePaths = ['/profile', '/cart'];
+const privatePaths = ['/profile', '/cart', '/checkout', '/payment'];
 const adminPaths = ['/admin', '/api/admin'];
 
 export async function middleware(request: NextRequest) {
@@ -58,6 +58,8 @@ export const config = {
     '/login',
     '/profile',
     '/cart',
+    '/checkout',
+    '/payment',
     '/admin/:path*',
     '/api/admin/:path*'
   ],

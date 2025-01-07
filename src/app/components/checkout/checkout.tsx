@@ -2,12 +2,15 @@
 
 import { Address } from '@/types/address';
 import styles from './checkout.module.css';
-import { CartProductWithPrice, CartType } from '@/types/cart';
+import { CartType } from '@/types/cart';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import CheckoutProduct from './checkoutProduct/checkoutProduct';
 import CheckoutPrice from './checkoutPrice/checkoutPrice';
+import toast from 'react-hot-toast';
+import axios from 'axios';
+import { OrderType } from '@/validation/order';
 
 type PropsType = {
   cart: CartType | null,
@@ -22,6 +25,32 @@ function CheckoutPage(props: PropsType) {
 
   // state to maintain selected address
   const [selectedAddressId, setSelectedAddressId] = useState('');
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  // function to proceed to the payment stage
+  async function proceedToPayment() {
+    if (!cart) return;
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post('/api/orders', {
+        cartId: cart._id, 
+        addressId: selectedAddressId,
+      });
+      
+      const order: OrderType = res.data.order;
+      const orderId = order._id;
+      toast.success('Redirecting to payment page...');
+      router.replace(`/payment?orderId=${orderId}`);
+    } catch (error: any) {
+      const errorData = error.response.data;
+      const errorMessage = errorData.message;
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
     setCart(props.cart);
@@ -92,7 +121,11 @@ function CheckoutPage(props: PropsType) {
 
       {/* checkout price container */}
       <div className={styles.right_grid}>
-        <CheckoutPrice cart={cart} />
+        <CheckoutPrice 
+          cart={cart} 
+          proceedToPayment={proceedToPayment}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   )
