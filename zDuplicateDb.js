@@ -8,7 +8,7 @@ async function duplicateDocuments() {
   try {
     await client.connect();
     const database = client.db('drumshopdb');
-    const collection = database.collection('events');
+    const collection = database.collection('orders');
 
     const documents = await collection.find().toArray();
 

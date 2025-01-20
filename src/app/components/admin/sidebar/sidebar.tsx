@@ -96,6 +96,29 @@ function Sidebar() {
         </div>
       </div>
 
+      <div 
+        className={`${styles.sidebar_entry} ${styles.cursor_pointer}`}
+        onClick={(e) => toggleSubMenu(e)}
+      >
+        <p>
+          <span>
+            <RiCalendarEventLine />
+            Orders
+          </span>
+          <IoIosArrowDown className={styles.arrow_icon} />
+        </p>          
+
+        <div className={styles.sub_menu}>
+          <ul>
+            <li>
+              <Link href="/admin/orders">
+                <RiEditFill />
+                View orders
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
       
       <div 
         className={`${styles.sidebar_entry} ${styles.cursor_pointer}`}

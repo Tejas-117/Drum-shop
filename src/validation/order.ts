@@ -1,4 +1,5 @@
 import { Address } from '@/types/address';
+import { CartType } from '@/types/cart';
 
 interface OrderType {
   _id: string,
@@ -13,6 +14,7 @@ interface OrderType {
   total: number,
 
   paymentStatus: string,
+  createdAt: string,
 };
 
 type OrderWithUserType = OrderType & {
@@ -23,7 +25,12 @@ type OrderWithUserType = OrderType & {
   }
 };
 
+type OrderWithCartType = OrderType & {
+  cartId: CartType
+}
+
 export {
   type OrderType,
   type OrderWithUserType,
-}
+  type OrderWithCartType
+};

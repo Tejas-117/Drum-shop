@@ -70,6 +70,20 @@ const orderSchema = new mongoose.Schema({
     enum: ['not_paid', 'paid'],
     default: 'not_paid',
   },
+
+  orderStatus: {
+    type: String,
+    enum: [
+      'pending', 
+      'processing', 
+      'shipped', 
+      'delivered', 
+      'cancelled',
+      'refunded',
+      'failed'
+    ],
+    default: 'pending',
+  },
 }, {
   timestamps: true,
 });

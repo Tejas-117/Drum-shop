@@ -509,9 +509,9 @@ function AddEvent() {
                 value={formState.status}
                 onChange={(e) => updateFormState('status', e.target.value)}
               >
-              <option value="ongoing">On going</option>
-              <option value="highlights">Highlights</option>
-            </select>
+                <option value="ongoing">On going</option>
+                <option value="highlights">Highlights</option>
+              </select>
             </div>
           </div>
           
