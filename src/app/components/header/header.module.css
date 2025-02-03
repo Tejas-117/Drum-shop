@@ -62,6 +62,73 @@
   width: 30px;
   height: 30px;
   display: none;
+  cursor: pointer;
+}
+
+.mobile_navbar {
+  position: absolute;
+  background-color: var(--charcoal);
+  color: white;
+  width: 300px;
+  top: 0px;
+  left: -300px;
+  transition: left linear 0.7s;
+  z-index: 100;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.show_mobile_navbar {
+  left: 0px;
+}
+
+.mobile_links {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile_links li {
+  margin: 1rem 0;
+  list-style: none;
+}
+
+.mobile_links a, .nav_links a {
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.nav_links a {
+  padding: 10px 5px;
+}
+
+.mobile_links a:after, .nav_links a:after {    
+  background: none repeat scroll 0 0 transparent;
+  bottom: 0;
+  content: "";
+  display: block;
+  height: 2px;
+  left: 50%;
+  position: absolute;
+  background: #fff;
+  transition: width 0.3s ease 0s, left 0.3s ease 0s;
+  width: 0;
+}
+
+.mobile_links a:hover:after, .nav_links a:hover:after { 
+  width: 100%; 
+  left: 0; 
+}
+
+.mobile_nav_close_icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 1200px) {
@@ -71,8 +138,7 @@
 }
 
 @media screen and (max-width: 1000px) {
-
-  .search_container,
+  .search_outer_container,
   .nav_links {
     display: none;
   }
