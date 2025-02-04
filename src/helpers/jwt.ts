@@ -1,8 +1,6 @@
 import {SignJWT, jwtVerify} from  'jose';
-import crypto from 'crypto';
 
 type JWTPayload = {
-  jwtId: string, // unique id for each token
   userId: string, // user id
   email: string, // user email
   isAdmin: boolean,
@@ -17,7 +15,6 @@ export async function signToken(
   user: {email: string, _id: string, isAdmin: boolean, privilege: string}
 ) {
   const payload: JWTPayload = {
-    jwtId: crypto.randomUUID(),
     userId: user._id,
     email: user.email,
     isAdmin: user.isAdmin,
