@@ -1,6 +1,7 @@
 import NeedHelp from '@/app/components/needHelp/needHelp';
 import ProductPage from '@/app/components/product/product';
 import { getUser } from '@/helpers/auth/getUser';
+import { Suspense } from 'react';
 
 async function fetchProduct(productId: string) {
   const res = await fetch(
@@ -27,7 +28,9 @@ async function Product({ params }: { params: {productId: string} }) {
 
   return (
     <main style={{minHeight: 'unset'}}>
-      <ProductPage product={product} user={user} />
+      <Suspense>
+        <ProductPage product={product} user={user} />
+      </Suspense>
       
       {/* 'contact us' container */}
       <NeedHelp />

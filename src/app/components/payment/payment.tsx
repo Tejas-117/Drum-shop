@@ -91,12 +91,14 @@ function PaymentPage(params: ParamsType) {
       },
      };
 
-     if (!window.Razorpay) {
+     const tempWindow = window as any;
+
+     if (!tempWindow.Razorpay) {
       toast.error('Refresh page to initiate payment');
       return;
      }
 
-      const paymentObject = new window.Razorpay(options);
+      const paymentObject = new tempWindow.Razorpay(options);
       paymentObject.on('payment.failed', function (response: any) {
         toast.error(response.error.description);
         toast.error(response.error.reason);

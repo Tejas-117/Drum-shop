@@ -7,7 +7,7 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdOutlineShoppingBasket } from 'react-icons/md';
 import Link from 'next/link';
 import SearchProducts from '../searchProducts/searchProducts';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 
 type CartPropType = {
@@ -70,7 +70,9 @@ function Header({ cart }: { cart: (CartPropType | null) }) {
 
       {/* input container to search products */}
       <div className={styles.search_outer_container}>
-        <SearchProducts />
+        <Suspense>
+          <SearchProducts />
+        </Suspense>
       </div>
 
       {/* navbar with links */}
