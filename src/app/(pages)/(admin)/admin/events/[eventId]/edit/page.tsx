@@ -11,7 +11,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 import styles from './editEvent.module.css';
-import { AddEventValidationSchema } from '@/validation/event';
+import { AddEventValidationSchema } from '../../../../../../../validation/event';
 import { ArtistType, EventType } from '@/types/event';
 import { MdDeleteForever } from 'react-icons/md';
 import { ImCancelCircle } from 'react-icons/im';
