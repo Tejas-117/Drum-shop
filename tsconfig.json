@@ -22,11 +22,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/validation/*": ["./src/validation/*"],
-      "@/app/*": ["./src/app/*"],
-      "@/components/*": ["./src/app/components/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
