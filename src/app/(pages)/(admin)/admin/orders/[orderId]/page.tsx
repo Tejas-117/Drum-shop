@@ -6,8 +6,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { OrderWithCartType } from '@/validation/order';
-import { ClipLoader } from 'react-spinners';
-import CheckoutProduct from '@/app/components/checkout/checkoutProduct/checkoutProduct';
+import CheckoutProduct from '../../../../../components/checkout/checkoutProduct/checkoutProduct';
 
 function Order() {
   const urlParams = useParams<{orderId: string}>();

@@ -10,7 +10,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import styles from './add.module.css';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { AddProductValidationSchema } from '@/validation/product';
+import { AddProductValidationSchema } from '../../../../../../validation/product';
 
 // icons used
 import { GrAdd } from 'react-icons/gr';
