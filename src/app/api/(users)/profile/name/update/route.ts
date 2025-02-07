@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import User from '@/models/user';
+import { verifyToken } from '../../../../../../helpers/jwt';
+import dbConnect from '../../../../../../lib/dbConnect';
+import User from '../../../../../../models/user';
 
 export async function POST(req: NextRequest) {
   try {

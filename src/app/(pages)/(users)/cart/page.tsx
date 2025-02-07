@@ -1,5 +1,5 @@
-import CartWrapper from '@/app/components/cart/cartWrapper/cartWrapper';
-import NeedHelp from '@/app/components/needHelp/needHelp';
+import CartWrapper from '../../../components/cart/cartWrapper/cartWrapper';
+import NeedHelp from '../../../components/needHelp/needHelp';
 import { cookies } from 'next/headers';
 
 // function to fetch cart data of the user

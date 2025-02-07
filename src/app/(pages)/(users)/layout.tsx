@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter, Bebas_Neue } from 'next/font/google';
-import '@/app/globals.css'
+import '../../../app/globals.css'
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import { Toaster } from 'react-hot-toast';
-import SetCartCookie from '@/app/components/setCartCookie/setCartCookie';
-import { getUser } from '@/helpers/auth/getUser';
+import SetCartCookie from '../../components/setCartCookie/setCartCookie';
+import { getUser } from '../../../helpers/auth/getUser';
 
 // add the required fonts
 const inter = Inter({

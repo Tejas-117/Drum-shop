@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import Link from 'next/link';
 
 import styles from './event.module.css';
-import { EventType } from '@/types/event';
+import { EventType } from '../../../../types/event';
 
 interface EventProps {
   event: EventType,

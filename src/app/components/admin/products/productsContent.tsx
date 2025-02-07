@@ -9,7 +9,7 @@ import { BarLoader, ClockLoader } from 'react-spinners';
 import styles from './productsContent.module.css';
 import AdminProduct from './product/product';
 import ProductsSearch from '../search/search';
-import { ProductType } from '@/types/product';
+import { ProductType } from '../../../../types/product';
 
 function ProductsContent() {
   const urlParams = useSearchParams();

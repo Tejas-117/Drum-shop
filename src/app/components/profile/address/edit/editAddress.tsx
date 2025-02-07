@@ -4,9 +4,9 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import styles from './editAddress.module.css';
 import { ImCancelCircle } from 'react-icons/im';
 import toast from 'react-hot-toast';
-import ShippingAddressSchema from '@/validation/shippingAddress';
+import ShippingAddressSchema from '../../../../../validation/shippingAddress';
 import axios from 'axios';
-import { Address } from '@/types/address';
+import { Address } from '../../../../../types/address';
 import { BeatLoader } from 'react-spinners';
 
 type UserType = {

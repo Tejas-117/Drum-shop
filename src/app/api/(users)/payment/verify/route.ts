@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
-import Payment from '@/models/payment';
-import dbConnect from '@/lib/dbConnect';
-import Order from '@/models/order';
-import Cart from '@/models/cart';
-import { OrderType } from '@/validation/order';
+import Payment from '../../../../../models/payment';
+import dbConnect from '../../../../../lib/dbConnect';
+import Order from '../../../../../models/order';
+import Cart from '../../../../../models/cart';
+import { OrderType } from '../../../../../validation/order';
 
 const generatedSignature = (
  razorpayOrderId: string,

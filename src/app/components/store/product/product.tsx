@@ -7,9 +7,9 @@ import { ClipLoader } from 'react-spinners';
 import Link from 'next/link';
 
 import styles from './product.module.css';
-import { addProduct } from '@/actions/cart';
-import { ProductType } from '@/types/product';
-import { UserType } from '@/helpers/auth/getUser';
+import { addProduct } from '../../../../actions/cart';
+import { ProductType } from '../../../../types/product';
+import { UserType } from '../../../../helpers/auth/getUser';
 
 // TODO: Add the important note on the products (i.e., `discount`, `out of stock`...etc.,)
 

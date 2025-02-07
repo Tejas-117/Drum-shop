@@ -1,7 +1,7 @@
 import Razorpay from 'razorpay';
 import { NextRequest, NextResponse } from 'next/server';
-import Order from '@/models/order';
-import { OrderType } from '@/validation/order';
+import Order from '../../../../../models/order';
+import { OrderType } from '../../../../../validation/order';
 
 const razorpay = new Razorpay({
  key_id: process.env.NEXT_RAZORPAY_KEY_ID!,

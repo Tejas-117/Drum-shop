@@ -3,10 +3,10 @@ import { writeFile, unlink } from 'node:fs/promises';
 import mongoose from 'mongoose';
 import { join } from 'node:path'
 ;
-import { AddProductValidationSchema } from '@/validation/product';
-import Product from '@/models/product';
-import dbConnect from '@/lib/dbConnect';
-import { ProductType } from '@/types/product';
+import { AddProductValidationSchema } from '../../../../../../../validation/product';
+import Product from '../../../../../../../models/product';
+import dbConnect from '../../../../../../../lib/dbConnect';
+import { ProductType } from '../../../../../../../types/product';
 import { revalidatePath } from 'next/cache';
 
 const ROOT_DIR = process.cwd();

@@ -6,9 +6,9 @@
 
 'use client';
 
-import { CartContextProvider } from '@/app/context/cart/provider';
-import { reducer } from '@/app/context/cart/reducer';
-import { CartProductWithPrice, CartType } from '@/types/cart';
+import { CartContextProvider } from '../../../context/cart/provider';
+import { reducer } from '../../../context/cart/reducer';
+import { CartProductWithPrice, CartType } from '../../../../types/cart';
 import CartPage from '../cart';
 
 function CartWrapper(

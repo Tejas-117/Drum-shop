@@ -5,7 +5,7 @@ import styles from './categoryList.module.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ClockLoader } from 'react-spinners';
-import { EventType } from '@/types/event';
+import { EventType } from '../../../../types/event';
 
 type CategoryListPropType = {
   _id: string,

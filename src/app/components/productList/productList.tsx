@@ -1,10 +1,9 @@
 'use client'; 
 
-import { ProductType } from '@/types/product';
-import { useState } from 'react';
+import { ProductType } from '../../../types/product';
 import styles from './productList.module.css';
 import Product from '../store/product/product';
-import { UserType } from '@/helpers/auth/getUser';
+import { UserType } from '../../../helpers/auth/getUser';
 
 type PropsType = {
   products: ProductType[],

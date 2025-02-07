@@ -1,6 +1,6 @@
-import dbConnect from '@/lib/dbConnect';
-import Event from '@/models/event';
-import { EventType } from '@/types/event';
+import dbConnect from '../../../../lib/dbConnect';
+import Event from '../../../../models/event';
+import { EventType } from '../../../../types/event';
 import { NextRequest, NextResponse } from 'next/server';
 
 type CategoryDataType = {

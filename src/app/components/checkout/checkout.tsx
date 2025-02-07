@@ -1,8 +1,8 @@
 'use client';
 
-import { Address } from '@/types/address';
+import { Address } from '../../../types/address';
 import styles from './checkout.module.css';
-import { CartType } from '@/types/cart';
+import { CartType } from '../../../types/cart';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import CheckoutProduct from './checkoutProduct/checkoutProduct';
 import CheckoutPrice from './checkoutPrice/checkoutPrice';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { OrderType } from '@/validation/order';
+import { OrderType } from '../../../validation/order';
 
 type PropsType = {
   cart: CartType | null,

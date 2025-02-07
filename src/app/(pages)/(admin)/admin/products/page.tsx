@@ -1,4 +1,4 @@
-import ProductsContent from '@/app/components/admin/products/productsContent';
+import ProductsContent from '../../../../components/admin/products/productsContent';
 import { Suspense } from 'react';
 
 function AdminProductsPage() {  

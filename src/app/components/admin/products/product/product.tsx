@@ -4,7 +4,7 @@ import { MdDeleteForever } from 'react-icons/md';
 import { Dispatch, forwardRef, SetStateAction, useState } from 'react';
 import Link from 'next/link';
 
-import { ProductType } from '@/types/product';
+import { ProductType } from '../../../../../types/product';
 import styles from './product.module.css';
 interface AdminProductProps {
   product: ProductType,

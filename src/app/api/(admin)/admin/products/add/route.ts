@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { AddProductValidationSchema } from '@/validation/product';
-import Product from '@/models/product';
-import dbConnect from '@/lib/dbConnect';
+import { AddProductValidationSchema } from '../../../../../../validation/product';
+import Product from '../../../../../../models/product';
+import dbConnect from '../../../../../../lib/dbConnect';
 import { revalidatePath } from 'next/cache';
 
 const ROOT_DIR = process.cwd();

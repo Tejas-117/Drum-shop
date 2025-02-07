@@ -1,6 +1,6 @@
-import { verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import Cart from '@/models/cart';
+import { verifyToken } from '../../../../helpers/jwt';
+import dbConnect from '../../../../lib/dbConnect';
+import Cart from '../../../../models/cart';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

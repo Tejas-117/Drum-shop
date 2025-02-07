@@ -1,8 +1,8 @@
-import generateOTP from '@/helpers/generateOTP';
+import generateOTP from '../../../../../../../helpers/generateOTP';
 import { NextRequest, NextResponse } from 'next/server';
-import redisClient from '@/lib/redisClient';
-import User from '@/models/user';
-import dbConnect from '@/lib/dbConnect';
+import redisClient from '../../../../../../../lib/redisClient';
+import User from '../../../../../../../models/user';
+import dbConnect from '../../../../../../../lib/dbConnect';
 
 export async function POST(req: NextRequest) {
   try {

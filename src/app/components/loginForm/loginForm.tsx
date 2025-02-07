@@ -8,7 +8,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import styles from './loginForm.module.css';
 import ReCAPTCHA from 'react-google-recaptcha';
 import toast from 'react-hot-toast';
-import { LoginValidationSchema } from '@/validation/user';
+import { LoginValidationSchema } from '../../../validation/user';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { BeatLoader } from 'react-spinners';

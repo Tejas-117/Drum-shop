@@ -1,5 +1,5 @@
-import EventContent from '@/app/components/event/eventContent';
-import { getUser } from '@/helpers/auth/getUser';
+import EventContent from '../../../../components/event/eventContent';
+import { getUser } from '../../../../../helpers/auth/getUser';
 
 async function fetchEvent(eventId: string) {
   const res = await fetch(

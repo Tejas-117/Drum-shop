@@ -11,7 +11,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { BeatLoader } from 'react-spinners';
 import { useRouter } from 'next/navigation';
-import { getSignUpValidationSchema } from '@/validation/user';
+import { getSignUpValidationSchema } from '../../../validation/user';
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 
 // type declared for the form state

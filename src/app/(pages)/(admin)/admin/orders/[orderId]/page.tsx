@@ -5,7 +5,7 @@ import styles from './order.module.css';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { OrderWithCartType } from '@/validation/order';
+import { OrderWithCartType } from '../../../../../../validation/order';
 import CheckoutProduct from '../../../../../components/checkout/checkoutProduct/checkoutProduct';
 
 function Order() {

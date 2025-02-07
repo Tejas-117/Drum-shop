@@ -2,12 +2,12 @@
 
 import { useContext, useEffect, useState } from 'react';
 import styles from './cartPrice.module.css';
-import { CartContext } from '@/app/context/cart/provider';
+import { CartContext } from '../../../context/cart/provider';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { BeatLoader, ClipLoader } from 'react-spinners';
-import { changeNewQuantity, updateQuantity } from '@/actions/cart';
+import { changeNewQuantity, updateQuantity } from '../../../../actions/cart';
 
 type QuantityErrorType = { 
   cartProductId: string,

@@ -1,6 +1,6 @@
-import EventCarousel from '@/app/components/carousel/events/eventCarousel/eventCarousel';
-import { EventType } from '@/types/event';
-import EventCategoryList from '@/app/components/events/categoryList/categoryList';
+import EventCarousel from '../../../components/carousel/events/eventCarousel/eventCarousel';
+import { EventType } from '../../../../types/event';
+import EventCategoryList from '../../../components/events/categoryList/categoryList';
 
 type CategoryDataType = {
   _id: string,

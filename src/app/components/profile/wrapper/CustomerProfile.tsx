@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import styles from './profile.module.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Sidebar from '@/app/components/profile/sidebar/sidebar';
+import Sidebar from '../../../components/profile/sidebar/sidebar';
 import { useRouter, useSearchParams } from 'next/navigation';
-import UserInfo from '@/app/components/profile/userInfo/userInfo';
-import ManageAddress from '@/app/components/profile/address/manage/manageAddress';
+import UserInfo from '../../../components/profile/userInfo/userInfo';
+import ManageAddress from '../../../components/profile/address/manage/manageAddress';
 
 type UserType = {
   fullName: string,

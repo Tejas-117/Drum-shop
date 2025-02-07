@@ -3,8 +3,8 @@ import { revalidatePath } from 'next/cache';
 import { unlink } from 'node:fs/promises'
 import { join } from 'node:path';
 
-import dbConnect from '@/lib/dbConnect';
-import Product from '@/models/product';
+import dbConnect from '../../../../../../../lib/dbConnect';
+import Product from '../../../../../../../models/product';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function DELETE(

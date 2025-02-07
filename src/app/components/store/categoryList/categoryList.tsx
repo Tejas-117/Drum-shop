@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { ProductType } from '@/types/product';
+import { ProductType } from '../../../../types/product';
 import Product from '../product/product';
 import styles from './categoryList.module.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { ClockLoader } from 'react-spinners';
-import { UserType } from '@/helpers/auth/getUser';
+import { UserType } from '../../../../helpers/auth/getUser';
 
 type CategoryListPropType = {
   _id: string,

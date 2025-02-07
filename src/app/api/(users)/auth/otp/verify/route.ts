@@ -4,7 +4,7 @@
 */
 
 import { NextRequest, NextResponse } from 'next/server';
-import redisClient from '@/lib/redisClient';
+import redisClient from '../../../../../../lib/redisClient';
 
 export async function POST(req: NextRequest) {
   try {

@@ -3,10 +3,10 @@ import { revalidatePath } from 'next/cache';
 import { unlink } from 'node:fs/promises'
 import { join } from 'node:path';
 
-import dbConnect from '@/lib/dbConnect';
+import dbConnect from '../../../../../../../lib/dbConnect';
 import { NextRequest, NextResponse } from 'next/server';
-import Event from '@/models/event';
-import { EventType } from '@/types/event';
+import Event from '../../../../../../../models/event';
+import { EventType } from '../../../../../../../types/event';
 
 export async function DELETE(
   req: NextRequest, 

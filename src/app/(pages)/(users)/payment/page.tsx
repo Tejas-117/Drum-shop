@@ -1,5 +1,5 @@
-import PaymentPage from '@/app/components/payment/payment';
-import { OrderWithUserType } from '@/validation/order';
+import PaymentPage from '../../../components/payment/payment';
+import { OrderWithUserType } from '../../../../validation/order';
 
 async function fetchOrder(orderId: string) {
   try {

@@ -1,5 +1,5 @@
-import { Address } from '@/types/address';
-import { CartType } from '@/types/cart';
+import { Address } from '../types/address';
+import { CartType } from '../types/cart';
 
 interface OrderType {
   _id: string,

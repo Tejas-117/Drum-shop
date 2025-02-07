@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import styles from './checkoutPrice.module.css';
 import { useRouter } from 'next/navigation';
 import { BeatLoader } from 'react-spinners';
-import { CartType } from '@/types/cart';
+import { CartType } from '../../../../types/cart';
 
 type PropsType = { 
   cart: CartType | null,

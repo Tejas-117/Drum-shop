@@ -1,12 +1,11 @@
 'use server';
 
-import mongoose from 'mongoose';
-import Cart from '@/models/cart';
-import dbConnect from '@/lib/dbConnect';
+import Cart from '../models/cart';
+import dbConnect from '../lib/dbConnect';
 import { cookies } from 'next/headers';
-import { verifyToken } from '@/helpers/jwt';
-import Product from '@/models/product';
-import { GroupsType, ProductType } from '@/types/product';
+import { verifyToken } from '../helpers/jwt';
+import Product from '../models/product';
+import { GroupsType, ProductType } from '../types/product';
 
 type CartProductType = {
   productId: string,

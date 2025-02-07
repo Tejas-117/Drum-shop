@@ -4,9 +4,9 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styles from './addAddress.module.css';
 import { ImCancelCircle } from 'react-icons/im';
 import toast from 'react-hot-toast';
-import ShippingAddressSchema from '@/validation/shippingAddress';
+import ShippingAddressSchema from '../../../../../validation/shippingAddress';
 import axios from 'axios';
-import { AddressInput } from '@/types/address';
+import { AddressInput } from '../../../../../types/address';
 import { BeatLoader, ClipLoader } from 'react-spinners';
 
 type FormStateType = AddressInput;

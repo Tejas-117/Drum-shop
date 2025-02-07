@@ -1,7 +1,7 @@
-import { verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import Cart from '@/models/cart';
-import ShippingAddress from '@/models/shippingAddress';
+import { verifyToken } from '../../../../helpers/jwt';
+import dbConnect from '../../../../lib/dbConnect';
+import Cart from '../../../../models/cart';
+import ShippingAddress from '../../../../models/shippingAddress';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import redisClient from '@/lib/redisClient';
-import { getTokenValidity } from '@/helpers/jwt';
+import redisClient from '../../../../../lib/redisClient';
+import { getTokenValidity } from '../../../../../helpers/jwt';
 
 export async function GET(req: NextRequest) {
   try {

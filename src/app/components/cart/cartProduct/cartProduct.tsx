@@ -4,10 +4,10 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import styles from './cartProduct.module.css';
 import toast from 'react-hot-toast';
 
-import { CartContext } from '@/app/context/cart/provider';
-import { type CartProductWithPrice } from '@/types/cart';
-import { type GroupsType } from '@/types/product';
-import { removeProduct, updateQuantity } from '@/actions/cart';
+import { CartContext } from '../../../context/cart/provider';
+import { type CartProductWithPrice } from '../../../../types/cart';
+import { type GroupsType } from '../../../../types/product';
+import { removeProduct, updateQuantity } from '../../../../actions/cart';
 
 function CartProduct({ cartProductId }: { cartProductId: string}) {
   const {state, dispatch} = useContext(CartContext);

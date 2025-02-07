@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import CustomerProfile from '@/app/components/profile/wrapper/CustomerProfile';
+import CustomerProfile from '../../../components/profile/wrapper/CustomerProfile';
 
 function CustomerProfilePage() {
   return (

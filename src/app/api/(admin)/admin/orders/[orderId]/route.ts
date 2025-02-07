@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import Event from '@/models/event';
+import dbConnect from '../../../../../../lib/dbConnect';
 import mongoose from 'mongoose';
-import Order from '@/models/order';
+import Order from '../../../../../../models/order';
 
 export async function GET(
   req: Request,

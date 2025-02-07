@@ -13,14 +13,14 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import styles from './product.module.css';
 import toast from 'react-hot-toast';
 
-import { addProduct } from '@/actions/cart';
-import { type UserType } from '@/helpers/auth/getUser';
+import { addProduct } from '../../../actions/cart';
+import { type UserType } from '../../../helpers/auth/getUser';
 
 import {
   type VariantsType,
   type GroupsType,
   type ProductType,
-} from '@/types/product';
+} from '../../../types/product';
 
 function Product(
   { product, user }: { product: ProductType, user: (UserType | null) }

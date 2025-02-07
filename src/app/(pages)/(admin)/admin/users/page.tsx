@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 import styles from './users.module.css';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { AdminUser } from '@/types/admin';
+import { AdminUser } from '../../../../../types/admin';
 import { RiEditFill } from 'react-icons/ri';
 import { MdDeleteForever } from 'react-icons/md';
-import { AddAdminUserValidationSchema } from '@/validation/admin';
+import { AddAdminUserValidationSchema } from '../../../../../validation/admin';
 import { BeatLoader } from 'react-spinners';
 
 function AdminUsers() {

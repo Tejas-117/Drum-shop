@@ -1,4 +1,4 @@
-import { verifyToken } from '@/helpers/jwt';
+import { verifyToken } from '../helpers/jwt';
 
 // function to check if the user is admin
 async function isAdmin(token: string) {

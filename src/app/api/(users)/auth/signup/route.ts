@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSignUpValidationSchema } from '@/validation/user';
-import redisClient from '@/lib/redisClient';
-import dbConnect from '@/lib/dbConnect';
-import User from '@/models/user';
+import { getSignUpValidationSchema } from '../../../../../validation/user';
+import redisClient from '../../../../../lib/redisClient';
+import dbConnect from '../../../../../lib/dbConnect';
+import User from '../../../../../models/user';
 
 export async function POST(req: NextRequest) {  
   const UserValidationSchema = getSignUpValidationSchema();

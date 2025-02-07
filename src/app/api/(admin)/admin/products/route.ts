@@ -1,6 +1,6 @@
-import dbConnect from '@/lib/dbConnect';
-import Product from '@/models/product';
-import { ProductType } from '@/types/product';
+import dbConnect from '../../../../../lib/dbConnect';
+import Product from '../../../../../models/product';
+import { ProductType } from '../../../../../types/product';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {

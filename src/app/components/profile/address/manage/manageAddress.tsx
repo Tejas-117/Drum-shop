@@ -5,7 +5,7 @@ import styles from './manageAddress.module.css';
 import AddAddress from '../add/addAddress';
 import toast from 'react-hot-toast';
 import axios from 'axios';
-import { Address } from '@/types/address';
+import { Address } from '../../../types/address';
 import { MdOutlineModeEdit } from 'react-icons/md';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { ClipLoader } from 'react-spinners';

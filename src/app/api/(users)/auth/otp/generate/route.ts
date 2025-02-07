@@ -3,11 +3,11 @@
   and adds a otp to that email in redis
 */
 
-import generateOTP from '@/helpers/generateOTP';
+import generateOTP from '../../../../../../helpers/generateOTP';
 import { NextRequest, NextResponse } from 'next/server';
-import redisClient from '@/lib/redisClient';
-import { sendSignUpOtpTemplate } from '@/helpers/email/sendOtp.template';
-import { sendEmail } from '@/helpers/email/sendMail';
+import redisClient from '../../../../../../lib/redisClient';
+import { sendSignUpOtpTemplate } from '../../../../../../helpers/email/sendOtp.template';
+import { sendEmail } from '../../../../../../helpers/email/sendMail';
 
 export async function POST(req: NextRequest) {
   try {

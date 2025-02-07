@@ -1,6 +1,6 @@
-import NeedHelp from '@/app/components/needHelp/needHelp';
-import ProductPage from '@/app/components/product/product';
-import { getUser } from '@/helpers/auth/getUser';
+import NeedHelp from '../../../../components/needHelp/needHelp';
+import ProductPage from '../../../../components/product/product';
+import { getUser } from '../../../../../helpers/auth/getUser';
 import { Suspense } from 'react';
 
 async function fetchProduct(productId: string) {

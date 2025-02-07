@@ -1,7 +1,7 @@
-import { verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import ShippingAddressSchema from '@/validation/shippingAddress';
-import ShippingAddress from '@/models/shippingAddress';
+import { verifyToken } from '../../../../../helpers/jwt';
+import dbConnect from '../../../../../lib/dbConnect';
+import ShippingAddressSchema from '../../../../../validation/shippingAddress';
+import ShippingAddress from '../../../../../models/shippingAddress';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 

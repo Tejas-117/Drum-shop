@@ -1,6 +1,6 @@
 'use client';
 
-import { OrderType } from '@/validation/order';
+import { OrderType } from '../../../validation/order';
 import axios from 'axios';
 import Script from 'next/script';
 import { useEffect, useState } from 'react';

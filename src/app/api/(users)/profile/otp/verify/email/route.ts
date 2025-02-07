@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import redisClient from '@/lib/redisClient';
+import redisClient from '../../../../../../../lib/redisClient';
 import { cookies } from 'next/headers';
-import { signToken, verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import User from '@/models/user';
+import { signToken, verifyToken } from '../../../../../../../helpers/jwt';
+import dbConnect from '../../../../../../../lib/dbConnect';
+import User from '../../../../../../../models/user';
 
 export async function POST(req: NextRequest) {
   try {

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './orders.module.css';
-import { OrderType } from '@/validation/order';
+import { OrderType } from '../../../../../validation/order';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { DataGrid, GridColDef, GridOverlay, GridToolbar } from '@mui/x-data-grid';

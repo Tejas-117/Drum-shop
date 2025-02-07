@@ -1,13 +1,13 @@
-import NeedHelp from '@/app/components/needHelp/needHelp';
+import NeedHelp from '../../../components/needHelp/needHelp';
 import styles from './store.module.css';
-import AdsCarousel from '@/app/components/carousel/store/ads/adsCarousel';
+import AdsCarousel from '../../../components/carousel/store/ads/adsCarousel';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BsArrowRight } from 'react-icons/bs';
-import ProductCategoryList from '@/app/components/store/categoryList/categoryList';
-import { ProductType } from '@/types/product';
-import { getUser } from '@/helpers/auth/getUser';
-import ProductList from '@/app/components/productList/productList';
+import ProductCategoryList from '../../../components/store/categoryList/categoryList';
+import { ProductType } from '../../../../types/product';
+import { getUser } from '../../../../helpers/auth/getUser';
+import ProductList from '../../../components/productList/productList';
 
 type CategoryDataType = {
   _id: string,

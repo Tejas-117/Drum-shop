@@ -1,7 +1,7 @@
-import dbConnect from '@/lib/dbConnect';
-import Event from '@/models/event';
-import { EventType } from '@/types/event';
-import { AddEventValidationSchema } from '@/validation/event';
+import dbConnect from '../../../../../../lib/dbConnect';
+import Event from '../../../../../../models/event';
+import { EventType } from '../../../../../../types/event';
+import { AddEventValidationSchema } from '../../../../../../validation/event';
 import { NextRequest, NextResponse } from 'next/server';
 import { join } from 'node:path';
 import { writeFile } from 'node:fs/promises';

@@ -12,11 +12,11 @@ import toast from 'react-hot-toast';
 
 import styles from './editEvent.module.css';
 import { AddEventValidationSchema } from '../../../../../../../validation/event';
-import { ArtistType, EventType } from '@/types/event';
+import { ArtistType, EventType } from '../../../../../../../types/event';
 import { MdDeleteForever } from 'react-icons/md';
 import { ImCancelCircle } from 'react-icons/im';
 import { FaSearch } from 'react-icons/fa';
-import { ProductType } from '@/types/product';
+import { ProductType } from '../../../../../../../types/product';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { useParams, useRouter } from 'next/navigation';
 

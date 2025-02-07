@@ -1,4 +1,4 @@
-import { EventType } from '@/types/event';
+import { EventType } from '../../../../../types/event';
 import styles from './eventCarousel.module.css';
 import MainCarousel from '../../home/main/mainCarousel';
 import Link from 'next/link';

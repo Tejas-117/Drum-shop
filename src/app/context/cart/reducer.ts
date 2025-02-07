@@ -1,4 +1,4 @@
-import { CartProductWithPrice } from '@/types/cart';
+import { CartProductWithPrice } from '../../../types/cart';
 
 export type CartStateType = {
   products: CartProductWithPrice[],

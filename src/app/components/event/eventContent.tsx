@@ -6,8 +6,8 @@ import { FaLocationDot } from 'react-icons/fa6';
 import { IoMdLink } from 'react-icons/io';
 
 import Product from '../store/product/product';
-import { UserType } from '@/helpers/auth/getUser';
-import { EventWithFeaturedProducts } from '@/types/event';
+import { UserType } from '../../../helpers/auth/getUser';
+import { EventWithFeaturedProducts } from '../../../types/event';
 import styles from './eventContent.module.css';
 import EventActions from './eventActions/eventActions';
 

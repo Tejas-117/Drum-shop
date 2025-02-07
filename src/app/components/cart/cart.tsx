@@ -6,8 +6,8 @@ import CartProduct from './cartProduct/cartProduct';
 import CartPrice from './cartPrice/cartPrice';
 
 import { useContext, useEffect, useState } from 'react';
-import { CartContext } from '@/app/context/cart/provider';
-import { CartProductWithPrice } from '@/types/cart';
+import { CartContext } from '../../context/cart/provider';
+import { CartProductWithPrice } from '../../../types/cart';
 
 function Cart() {
   const {state, dispatch} = useContext(CartContext);

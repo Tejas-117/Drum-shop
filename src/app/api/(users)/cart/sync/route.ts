@@ -1,7 +1,7 @@
-import { verifyToken } from '@/helpers/jwt';
-import dbConnect from '@/lib/dbConnect';
-import Cart from '@/models/cart';
-import { CartProduct } from '@/types/cart';
+import { verifyToken } from '../../../../../helpers/jwt';
+import dbConnect from '../../../../../lib/dbConnect';
+import Cart from '../../../../../models/cart';
+import { CartProduct } from '../../../../../types/cart';
 import { NextRequest, NextResponse } from 'next/server';
 
 type QuantityErrorType = { 

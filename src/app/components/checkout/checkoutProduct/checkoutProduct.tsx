@@ -1,4 +1,4 @@
-import { CartProduct } from '@/types/cart';
+import { CartProduct } from '../../../../types/cart';
 import styles from './checkoutProduct.module.css';
 import { useEffect, useState } from 'react';
 

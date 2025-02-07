@@ -1,6 +1,6 @@
-import CheckoutPage from '@/app/components/checkout/checkout';
+import CheckoutPage from '../../../components/checkout/checkout';
 import styles from './checkout.module.css';
-import NeedHelp from '@/app/components/needHelp/needHelp';
+import NeedHelp from '../../../components/needHelp/needHelp';
 import { cookies } from 'next/headers';
 
 // function to fetch cart data of the user
