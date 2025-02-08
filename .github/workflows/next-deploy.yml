@@ -39,6 +39,7 @@ jobs:
           npm run build
 
       - name: copy static files
+        run: |
           cp -R ./public ./.next/standalone/public
           cp -R ./.next/static ./.next/standalone/.next/static
 
