@@ -37,11 +37,8 @@ jobs:
         run: |
           npm install
           npm run build
-
-      - name: copy static files
-        run: |
-          cp -R ./public ./.next/standalone/public
-          cp -R ./.next/static ./.next/standalone/.next/static
+          mv ./build/static ./build/standalone/build
+          mv ./public ./build/standalone
 
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
@@ -50,4 +47,4 @@ jobs:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./.next/standalone
+          package: ./build/standalone
