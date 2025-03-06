@@ -7,7 +7,7 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { MdOutlineShoppingBasket } from 'react-icons/md';
 import Link from 'next/link';
 import SearchProducts from '../searchProducts/searchProducts';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 
 type CartPropType = {
@@ -18,6 +18,11 @@ type CartPropType = {
 function Header({ cart }: { cart: (CartPropType | null) }) {
   const cartCount = cart?.productCount || 0;  
   const [showMobileNav, setShowMobileNav] = useState(false);
+
+  useEffect(() => {
+    if (showMobileNav) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'auto';
+  }, [showMobileNav]);
 
   return (
     <nav className={styles.navbar}>
@@ -49,7 +54,7 @@ function Header({ cart }: { cart: (CartPropType | null) }) {
               </Link>
 
               {(cartCount > 0) &&
-                <span className={styles.cart_notification}>{cartCount}</span>
+                <span className={styles.cart_notification_mobile}>{cartCount}</span>
               }
             </li>
           </ul>

@@ -42,6 +42,17 @@
   font-size: 0.7rem;
 }
 
+.cart_notification_mobile {
+  position: absolute;
+  top: 0px;
+  right: 35%;
+  background-color: red;
+  color: var(--white);
+  border-radius: 50%;
+  padding: 3px 10px;
+  font-size: 2px;
+}
+
 .user_icon {
   width: 27px;
   height: 27px;
@@ -66,13 +77,13 @@
 }
 
 .mobile_navbar {
-  position: absolute;
+  position: fixed;
   background-color: var(--charcoal);
   color: white;
   width: 300px;
   top: 0px;
   left: -300px;
-  transition: left linear 0.7s;
+  transition: left linear 0.4s;
   z-index: 100;
   padding: 2rem;
   text-align: center;
