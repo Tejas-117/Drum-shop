@@ -30,7 +30,10 @@ type ProductType = {
   hsnCode: number,
   description: string,
   specification: string,
-  images: string[],
+  images: {
+    key: string,
+    url: string
+  }[],
   variants: VariantsType,
   groups: GroupsType[],
 }

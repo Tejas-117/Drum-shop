@@ -6,6 +6,8 @@ import { join } from 'node:path';
 import dbConnect from '../../../../../../../lib/dbConnect';
 import Product from '../../../../../../../models/product';
 import { NextRequest, NextResponse } from 'next/server';
+import { bucketName, getS3Client } from '@/lib/s3Client';
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
 
 export async function DELETE(
   req: NextRequest, 
@@ -33,13 +35,16 @@ export async function DELETE(
       );  
     }
 
-    // // delete the images
-    product.images.forEach(async (img: string) => {
-      // delete each image
-      const ROOT_DIR = process.cwd();
-      const PUBLIC_DIR = join(ROOT_DIR, 'public');
-      await unlink(`${PUBLIC_DIR}/${img}`);
+    // delete the images from s3
+    const s3Client = getS3Client();
+    const deleteCommand = new DeleteObjectsCommand({ 
+      Bucket: bucketName, 
+      Delete: {
+        Objects: product.images.map((img: {key: string}) => ({ Key: img.key }))
+      },
     });
+
+    await s3Client.send(deleteCommand);
 
     await Product.findByIdAndDelete(productId);
 

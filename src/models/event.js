@@ -57,10 +57,15 @@ const eventSchema = new mongoose.Schema({
   }],
 
   poster: {
-    type: String,
-    minLength: [1, 'Event poster can\'t be empty'],
+    // type: String,
+    // minLength: [1, 'Event poster can\'t be empty'],
+    key: String,
+    url: String
   },
-  media: [String],
+  media: [{
+    key: String,
+    url: String
+  }],
 
   socialLinks: {
     instagram: String,

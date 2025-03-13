@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { AddProductValidationSchema } from '../../../../../../validation/product';
 import Product from '../../../../../../models/product';
 import dbConnect from '../../../../../../lib/dbConnect';
 import { revalidatePath } from 'next/cache';
-
-const ROOT_DIR = process.cwd();
-const UPLOAD_DIR = join(ROOT_DIR, 'public', 'uploads');
+import { bucketName, getS3Client } from '@/lib/s3Client';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 
 export async function POST(req: NextRequest) {
   try {
@@ -57,24 +54,39 @@ export async function POST(req: NextRequest) {
     await dbConnect();
     const newProduct = new Product(validateData.data);
 
-    // write the images to the /uploads folder
-    // TODO: upload images to cloud storage
     const imagePaths = [];
     for(let i = 0; i < images.length; i += 1) {
       const image = images[i];
 
       // get file extension
+      // TODO: check if the extension belongs to the image type only
       const extension = image.name.split('.').pop();
 
-      const imagePath = `${UPLOAD_DIR}/${newProduct._id}_${i}.${extension}`;
+      // uploading to s3 bucket
+      const awsFileName = `product/${newProduct._id}_${i}.${extension}`;
+      const awsFileUrl = `${process.env.AWS_S3_BASE_URL}/${awsFileName}`;
+      const s3Client = getS3Client();
 
-       // track all the image urls to store in db
-      const imageUrl = `/uploads/${newProduct._id}_${i}.${extension}`;
-      imagePaths.push(imageUrl);
+      // Convert Blob to ArrayBuffer, then to Buffer
+      const arrayBuffer = await image.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-      const bytes = await image.arrayBuffer();
-      const imgBuffer = Buffer.from(bytes);
-      await writeFile(imagePath, imgBuffer);
+      // create a new put object command with parameters
+      const putObjectParams = {
+        Bucket: bucketName,
+        Key: awsFileName,
+        Body: buffer,
+        ContentType: image.type
+      };
+
+      const putObjectCommand = new PutObjectCommand(putObjectParams);
+      
+      // send the command to upload image
+      const fileUploadRes = await s3Client.send(putObjectCommand);
+      imagePaths.push({
+        key: awsFileName,
+        url: awsFileUrl
+      });
     };
 
     // add the images to the product
@@ -90,7 +102,6 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { message: 'Internal server error' },
       { status: 500 }

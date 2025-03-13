@@ -36,7 +36,7 @@ const  Event = forwardRef<HTMLAnchorElement, EventProps>(({ event }, ref) => {
     >
       <div className={styles.poster_container}>
         <img
-          src={event.poster}
+          src={event.poster.url}
           alt={`${event.name} poster`}
         />
       </div>

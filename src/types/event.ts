@@ -24,8 +24,14 @@ interface EventType {
     x: string,
   },
 
-  poster: string,
-  media: string[]
+  poster: {
+    key: string,
+    url: string
+  },
+  media: {
+    key: string,
+    url: string
+  }[]
 }
 
 type EventWithFeaturedProducts = Omit<EventType, 'featuredProducts'> & {

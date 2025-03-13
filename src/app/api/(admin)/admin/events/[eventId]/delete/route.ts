@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 import { revalidatePath } from 'next/cache';
-import { unlink } from 'node:fs/promises'
-import { join } from 'node:path';
 
 import dbConnect from '../../../../../../../lib/dbConnect';
 import { NextRequest, NextResponse } from 'next/server';
 import Event from '../../../../../../../models/event';
 import { EventType } from '../../../../../../../types/event';
+import { bucketName, getS3Client } from '@/lib/s3Client';
+import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
 
 export async function DELETE(
   req: NextRequest, 
@@ -34,14 +34,18 @@ export async function DELETE(
       );  
     }
 
-    // // delete the images
+    const s3Client = getS3Client();
+
+    // delete the images
     const eventMedia = [event.poster, ...event.media];
-    eventMedia.forEach(async (img: string) => {
-      // delete each image
-      const ROOT_DIR = process.cwd();
-      const PUBLIC_DIR = join(ROOT_DIR, 'public');
-      await unlink(`${PUBLIC_DIR}/${img}`);
+    const deleteCommand = new DeleteObjectsCommand({ 
+      Bucket: bucketName, 
+      Delete: {
+        Objects: eventMedia.map((media) => ({ Key: media.key }))
+      },
     });
+
+    await s3Client.send(deleteCommand);
 
     await Event.findByIdAndDelete(eventId);
 

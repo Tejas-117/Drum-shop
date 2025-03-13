@@ -14,7 +14,7 @@ function EventCarousel(
       <div className={styles.event_carousel_slide}>
         <Link href={`/events/${event._id}`} target='blank'>
           <img
-            src={event.poster}
+            src={event.poster.url}
             alt={`${event.name} poster`}
           />
 

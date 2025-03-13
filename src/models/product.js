@@ -63,7 +63,10 @@ const productSchema = new mongoose.Schema({
     minLength: [1, 'Product specification can\'t be empty'],   
   },
 
-  images: [String],
+  images: [{
+    key: String,
+    url: String
+  }],
 
   // all the available variants
   variants: {

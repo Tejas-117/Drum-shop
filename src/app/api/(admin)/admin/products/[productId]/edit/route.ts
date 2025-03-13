@@ -8,12 +8,15 @@ import Product from '../../../../../../../models/product';
 import dbConnect from '../../../../../../../lib/dbConnect';
 import { ProductType } from '../../../../../../../types/product';
 import { revalidatePath } from 'next/cache';
+import { bucketName, getS3Client } from '@/lib/s3Client';
+import { DeleteObjectCommand, DeleteObjectsCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
 const ROOT_DIR = process.cwd();
 const UPLOAD_DIR = join(ROOT_DIR, 'public', 'uploads');
 
 type OldImageType = {
   url: string,
+  key: string,
   delete: boolean,
   isPrimary: boolean,
 }
@@ -106,22 +109,32 @@ export async function PUT(
     */
 
     // (1). delete the images tagged for removal
-    let filteredImgs: string[] = [];
+    let filteredImgs: {key: string, url: string}[] = [];
     if (imagesToDelete.length > 0) {
       // add the urls of the image to be deleted to the set
       const removeImgsIdx = new Set();
+      const removeImgsKeyarr: string[] = [];
       
       imagesToDelete.forEach(async (imgToDelete) => {
-        removeImgsIdx.add(imgToDelete.url);
-        
-        const PUBLIC_DIR = join(ROOT_DIR, 'public');
-        await unlink(`${PUBLIC_DIR}/${imgToDelete.url}`);        
+        removeImgsIdx.add(imgToDelete.key);
+        removeImgsKeyarr.push(imgToDelete.key);
       });
+              
+      // delete the images from s3
+      const s3Client = getS3Client();
+      const deleteCommand = new DeleteObjectsCommand({ 
+        Bucket: bucketName, 
+        Delete: {
+          Objects: removeImgsKeyarr.map((k) => ({ Key: k }))
+        },
+      });
+  
+      await s3Client.send(deleteCommand);
 
       // from the stored images, filter out the images not to be deleted.
-      product.images.forEach((imgUrl) => {
-        if (removeImgsIdx.has(imgUrl) === false) {
-          filteredImgs.push(imgUrl);
+      product.images.forEach((img) => {
+        if (removeImgsIdx.has(img.key) === false) {
+          filteredImgs.push(img);
         }
       });
     } else {
@@ -131,27 +144,47 @@ export async function PUT(
     // (2). upload new images
     const uploadedImagePaths = [];
     if (uploadedImages.length > 0) {
-      // write the images to the /uploads folder
       // TODO: upload images to cloud storage
 
       // avoid duplicate image names
-      let imageIndex = filteredImgs.length;
+      let imageIndex = 0;
+      for (let i = 0; i < filteredImgs.length; i += 1) {
+        const imageKey = filteredImgs[i].key;
+        const number = parseInt(imageKey.split('_')[1].split('.')[0]);
+        if (number > imageIndex) imageIndex = number;
+      }
+      imageIndex += 1;
 
       for(let i = 0; i < uploadedImages.length; i += 1) {
         const image = uploadedImages[i];
-  
-        // get file extension
+
         const extension = image.name.split('.').pop();
+        
+        // uploading to s3 bucket
+        const awsFileName = `product/${product._id}_${imageIndex}.${extension}`;
+        const awsFileUrl = `${process.env.AWS_S3_BASE_URL}/${awsFileName}`;
+        const s3Client = getS3Client();
   
-        const imagePath = `${UPLOAD_DIR}/${product._id}_${imageIndex}.${extension}`;
+        // Convert Blob to ArrayBuffer, then to Buffer
+        const arrayBuffer = await image.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
   
-         // track all the image urls to store in db
-        const imageUrl = `/uploads/${product._id}_${imageIndex}.${extension}`;
-        uploadedImagePaths.push(imageUrl);
+        // create a new put object command with parameters
+        const putObjectParams = {
+          Bucket: bucketName,
+          Key: awsFileName,
+          Body: buffer,
+          ContentType: image.type
+        };
   
-        const bytes = await image.arrayBuffer();
-        const imgBuffer = Buffer.from(bytes);
-        await writeFile(imagePath, imgBuffer);
+        const putObjectCommand = new PutObjectCommand(putObjectParams);
+        
+        // send the command to upload image
+        await s3Client.send(putObjectCommand);
+        uploadedImagePaths.push({
+          key: awsFileName,
+          url: awsFileUrl
+        });
 
         imageIndex += 1;
       };
@@ -160,15 +193,15 @@ export async function PUT(
     // (3). check for the primary image
     // check if the primary image is from the oldImages
     let primaryImg = oldImages.find((img) => (img.delete === false) && (img.isPrimary === true));
-    let allImgPaths: string[] = [];
+    let allImgPaths: {url: string, key: string}[] = [];
 
     // now handle the primary image
     if (primaryImg) {
       // if the primary image was in the old images, then add it to the start of the path
-      const primaryImgUrl = primaryImg.url;
-      const otherImgs = filteredImgs.filter((imgUrl) => imgUrl !== primaryImgUrl);
+      const primaryImgKey = primaryImg.key;
+      const otherImgs = filteredImgs.filter((img) => img.key !== primaryImgKey);
 
-      allImgPaths = [primaryImgUrl, ...otherImgs, ...uploadedImagePaths];
+      allImgPaths = [primaryImg, ...otherImgs, ...uploadedImagePaths];
     } else {
       // if the primary image was not in the old images, then it must be in new images
       allImgPaths = [...uploadedImagePaths, ...filteredImgs];

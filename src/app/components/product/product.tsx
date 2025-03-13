@@ -174,7 +174,7 @@ function Product(
                     key={idx}
                   > 
                     <img 
-                      src={img}
+                      src={img.url}
                       alt={`${product.name} image`} 
                       onClick={() => setActiveImg(idx)}
                     />
@@ -185,7 +185,7 @@ function Product(
 
             <div className={styles.display_img}>
               <img 
-                src={product.images[activeImg]} 
+                src={product.images[activeImg].url} 
                 alt="Product image"
               />
             </div>

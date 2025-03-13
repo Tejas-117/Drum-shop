@@ -106,7 +106,7 @@ const  Product = forwardRef<HTMLAnchorElement, ProductProps>(({ product, user },
 
       <div className={styles.product_image_container}>
         <img 
-          src={product.images[0]}
+          src={product.images[0].url}
           alt={`${product.name} image`} 
         />
 

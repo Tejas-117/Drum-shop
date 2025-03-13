@@ -29,7 +29,7 @@ const Product = forwardRef<HTMLTableRowElement, AdminProductProps>(
     <tr ref={ref}>
       <td>
         <img
-          src={product.images[0]} 
+          src={product.images[0].url} 
           alt={`${product.name} image`} 
         />
       </td>

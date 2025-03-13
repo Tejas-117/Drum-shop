@@ -50,6 +50,7 @@ type GroupType = {
 
 type DisplayImageType = {
   url: string,
+  key: string,
   type: ('new' | 'old'),
   delete: boolean,
   isPrimary: boolean,
@@ -95,7 +96,7 @@ function AddProduct() {
   const [displayImgs, setDisplayImgs] = useState<DisplayImageType[]>([]);
 
   // show 'add variant' fields
-  const [showAddVarient, setShowAddVarient] = useState(false);
+  const [showAddVariant, setShowAddVariant] = useState(false);
 
   // all variants data
   const [variants, setVariants] = useState<VariantType[]>([]);
@@ -153,7 +154,7 @@ function AddProduct() {
     setVariants((prevData) => [...prevData, newVariant]);
 
     // clear other states
-    setShowAddVarient(false);
+    setShowAddVariant(false);
     setVariantVal([]);
   }
 
@@ -352,7 +353,7 @@ function AddProduct() {
       const formData = new FormData();
       formData.append('productData', JSON.stringify(productData));
 
-      // iterate over each file and add them to the formData
+      // iterate over each uploaded file and add them to the formData
       if (images) {
         for (let i = 0; i < images.length; i += 1) {
           formData.append('images', images[i]);
@@ -405,9 +406,14 @@ function AddProduct() {
       setFormState(product);
       
       // add the old images to state
-      const imagesArr: DisplayImageType[] = product.images.map((img: string, idx: number) => {
+      type imgType = {
+        url: string,
+        key: string,
+      }
+      const imagesArr: DisplayImageType[] = product.images.map((img: imgType, idx: number) => {
         return { 
-          url: img, 
+          key: img.key,
+          url: img.url, 
           type: 'old', 
           delete: false,
           isPrimary: (idx === 0) // the first image is primary by default
@@ -816,7 +822,7 @@ function AddProduct() {
             </div>
             
             {/* form to add more variants */}
-            {(showAddVarient === true) &&
+            {(showAddVariant === true) &&
               <div className={styles.variant_sub_form}>
                 <div className={styles.form_control}>
                   <label htmlFor="optionName">Option name</label>
@@ -855,7 +861,7 @@ function AddProduct() {
                 </div>
 
                 <button type='button' onClick={saveVariantVal}>Save</button>
-                <button type='button' onClick={() => setShowAddVarient(false)}>Close</button>
+                <button type='button' onClick={() => setShowAddVariant(false)}>Close</button>
               </div>          
             }
 
@@ -863,7 +869,7 @@ function AddProduct() {
               <button
                 type='button'
                 className={styles.add_variant_btn}
-                onClick={() => setShowAddVarient(true)}
+                onClick={() => setShowAddVariant(true)}
               >
                 <GrAdd /> Add variant
               </button>

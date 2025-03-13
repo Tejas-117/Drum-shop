@@ -265,7 +265,7 @@ function AddEvent() {
         }
       }
 
-      try {
+     try {
         const res = await axios.post(
           '/api/admin/events/add',
           formData,
@@ -297,8 +297,10 @@ function AddEvent() {
         });
 
         // clear the images input
-        const imageInput: HTMLInputElement = document.querySelector('input[type="file"]')!;
-        imageInput.value = '';
+        const imageInputEles: NodeListOf<HTMLInputElement> = document.querySelectorAll('input[type="file"]')!;
+        imageInputEles.forEach((imageInput) => {
+          imageInput.value = '';
+        });
       } catch (error: any) {
         const errorData = error.response.data;
         const errorMessage = errorData.message;
@@ -502,7 +504,7 @@ function AddEvent() {
               <div className={styles.form_control}>
                 <input 
                   type='file' 
-                  name='poster'
+                  name='media'
                   accept='image/*'
                   multiple
                   onChange={(e) => handleImageUpload(e, 'media')}

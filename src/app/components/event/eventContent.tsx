@@ -55,7 +55,7 @@ function EventContent({ event, user }: EventContentProps) {
       {/* poster container */}
       <div className={styles.poster_container}>
         <img 
-          src={event.poster}
+          src={event.poster.url}
           alt={`${event.name} poster`}
         />
       </div>
@@ -150,9 +150,9 @@ function EventContent({ event, user }: EventContentProps) {
           <h2>EVENT HIGHLIGHTS</h2>
 
           <div className={styles.highlights_inner_container}>
-            {event.media.map((url, idx) => {
+            {event.media.map((media, idx) => {
               return (
-                <img src={url} key={idx} />
+                <img src={media.url} key={idx} />
               )
             })}
           </div>

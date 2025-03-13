@@ -535,7 +535,7 @@ function AddEvent() {
                 <h3 className={styles.section_heading}>PREVIOUSLY ADDED MEDIA</h3>
 
                 <div className={styles.prev_pictures_container}>
-                  {eventData?.media.map((url, idx) => {
+                  {eventData?.media.map(({key, url}, idx) => {
                     return (
                       <div className={styles.prev_picture} key={idx}>
                         <img 
@@ -547,13 +547,13 @@ function AddEvent() {
                           <span>Delete this file?</span>
                           <input 
                             type='checkbox'
-                            checked={deleteMedia.has(url)}
+                            checked={deleteMedia.has(key)}
                             onChange={(e) => {
                               setDeleteMedia((prevState) => {
                                 const newDelMedia = new Set(prevState);
                                 
-                                if (e.target.checked) newDelMedia.add(url);
-                                else newDelMedia.delete(url);
+                                if (e.target.checked) newDelMedia.add(key);
+                                else newDelMedia.delete(key);
                                 
                                 return newDelMedia;
                               })
@@ -610,7 +610,7 @@ function AddEvent() {
               /> :
               <img 
                 className={styles.display_poster}
-                src={eventData?.poster} 
+                src={eventData?.poster.url} 
                 alt='Poster of the event' 
               />
             }
